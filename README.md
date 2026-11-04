@@ -41,7 +41,7 @@ config/                 the two webpack loaders (below)
 types/                  types for the Framer sources and for font-file imports
 components/             the Framer code components this page uses, as written for Framer
 assets/                 Paper Mono and Cal Anim Graph 6
-fonts/                  Cal Sans 2.011 woff2: Latin subset and full; standin/ = their 2.001, preview only
+fonts/                  Cal Sans 2.011 woff2: Latin subset and full; the Flex subset for HOIGrid; standin/ = their 2.001, preview only
 ```
 
 The Framer components are imported from `components/*.tsx` as `@components/<File>`.
@@ -52,7 +52,7 @@ The Framer components are imported from `components/*.tsx` as `@components/<File
    `src/framer/`, and `src/lib/clientOnly.tsx` come with it; adjust the `@/` imports to
    your aliases.
 2. **The Framer component sources.** Copy the `.tsx` files the sections import (from
-   `framercomponents/components/`, including `Shared.tsx` and `SharedTester.tsx`) into
+   `components/`, including `Shared.tsx` and `SharedTester.tsx`) into
    one folder in your repo and point the `@components` alias at it. Don't edit them; they
    are maintained as Framer code components and get re-copied when they change.
 3. **The `framer` shim.** The components `import { addPropertyControls, ControlType } from
@@ -101,11 +101,11 @@ The Framer components are imported from `components/*.tsx` as `@components/<File
 | `"Cal Anim Graph 6 [MORF,opsz]"`, `"… Variable Regular"` | `assets/CalAnimGraph6[MORF,opsz]VF.woff2` | literal (VariableMorph, VariableMorph2) |
 | `"Paper Mono"`, `"Paper Mono Regular"` | `assets/PaperMono-Regular.woff2` | literal |
 
-The components ask for their fonts by family name, and `next/font` can't keep a name (it
-hashes it), so those faces are plain `@font-face` rules rendered into `<head>` by the
-layout (`LITERAL_FONT_FACES` in `src/fonts.ts`). Their URLs are built exactly the way
-`next/font` builds its own, so `"Cal Sans 2"` and the demo class are one URL and one
-175 KB download.
+The components ask for their fonts by family names like `"Cal Sans 2"`, and `next/font`
+names a family after its JavaScript variable, so those faces are plain `@font-face`
+rules rendered into `<head>` by the layout (`LITERAL_FONT_FACES` in `src/fonts.ts`).
+Their URLs are built exactly the way `next/font` builds its own, so `"Cal Sans 2"` and
+the demo class are one URL and one 175 KB download.
 
 ### Two text classes
 
@@ -208,9 +208,9 @@ renders on the server.
 
 ## Notes for Cal.com
 
-Checked on 2026-11-03: `next build` passes (the `/font` route prerenders as static,
-191 kB first load), the page renders at 375, 390, 810, 1200, and 1920 in light and dark
-with no console errors, and no request leaves the host.
+On 2026-11-04, `next build` passed from a fresh clone (the `/font` route prerenders as
+static, 193 kB first load). On 2026-11-03, the page rendered at 375, 390, 810, 1200, and
+1920 in light and dark with no console errors, and no request left the host.
 
 - **Breakpoint names.** Your staging CSS calls the same widths `tablet` (810) and
   `desktop` (1200). The `bp810:`/`bp1200:` prefixes here are the Framer bands under
@@ -233,9 +233,11 @@ with no console errors, and no request leaves the host.
   that inheritance is the first thing to check.
 - **Phone headings.** The 16px phone headings in sections 13, 14, and 15 are as the Framer
   page has them; only 18, 22, and 23 were raised to 20px (a bug fix).
-- **Safari** was not checked. Everything was verified in Chrome (headless and desktop).
-  The things to look at there first: the hero foil (AnimatedCal2, WebGL), the HOIGrid in
-  section 11 (avar2), and the full-font fall-through for glyphs outside the Latin subset.
+- **Safari and Firefox.** The Flex subset in section 10 was checked in Safari 26.2
+  against the full Flex file: the only differences are invisible, at most 8/255 on glyph
+  edges. The rest of the page was verified only in Chrome (headless and desktop). In
+  Safari, look first at the hero foil (AnimatedCal2, WebGL) and the full-font
+  fall-through for glyphs outside the Latin subset. Firefox was not checked.
 - **Texts in section 17.** The ten passages are the Framer page's. Most are public domain
   (Gropius, Dickens, the Bauhaus manifesto; Faulkner's 1929 opening entered the US public
   domain in 2025). The one still in copyright is the opening sentence of Pynchon's

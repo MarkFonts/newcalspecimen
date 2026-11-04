@@ -5,8 +5,7 @@
 //    "https://framer.com/m/SharedTester-<id>.js@<hash>". The @<hash> is a version pin that
 //    differs per component, so both are matched by prefix and pointed at the local files.
 //    (A NormalModuleReplacementPlugin can't do this: webpack's web target externalizes
-//    https:// requests before the replacement takes effect, so it's done in source here,
-//    the same way sandbox/vite.config.ts does it.)
+//    https:// requests before the replacement takes effect, so it's done in source here.)
 //
 // 2. The components fetch their fonts from jsDelivr at runtime: Shared.tsx's CAL_SANS points
 // at the 1.19 MB CalSansVF.ttf, and HOIGrid's FLEX at CalSansFlexVF.ttf. Each URL below is
