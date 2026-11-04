@@ -57,6 +57,8 @@ export function ThreeWaysTabs({ intro, items }: { intro: ReactNode; items: Item[
     const [onScreen, setOnScreen] = useState(false)
     const [reduced, setReduced] = useState(true)
     const root = useRef<HTMLDivElement>(null)
+    const stage = useRef<HTMLDivElement>(null)
+    const [stageWidth, setStageWidth] = useState(0)
 
     useEffect(() => setReduced(matchMedia("(prefers-reduced-motion: reduce)").matches), [])
 
@@ -67,6 +69,14 @@ export function ThreeWaysTabs({ intro, items }: { intro: ReactNode; items: Item[
         return () => io.disconnect()
     }, [])
 
+    // The specimen's size and box are fitted to this width (see CalThreeWaysCard).
+    useEffect(() => {
+        if (!stage.current) return
+        const ro = new ResizeObserver(([e]) => setStageWidth(e.contentRect.width))
+        ro.observe(stage.current)
+        return () => ro.disconnect()
+    }, [])
+
     return (
         <div
             ref={root}
@@ -74,10 +84,10 @@ export function ThreeWaysTabs({ intro, items }: { intro: ReactNode; items: Item[
             data-offscreen={onScreen ? undefined : ""}
         >
             <div className={styles.tabIntro}>{intro}</div>
-            <div className={styles.tabStage}>
+            <div ref={stage} className={styles.tabStage}>
                 {items.map((item, i) => (
                     <div key={item.way} className={`text-foreground ${styles.ways}`} data-open={i === active ? "" : undefined} aria-hidden={i !== active}>
-                        <CalThreeWaysCard way={item.way} />
+                        <CalThreeWaysCard way={item.way} stageWidth={stageWidth} />
                     </div>
                 ))}
             </div>

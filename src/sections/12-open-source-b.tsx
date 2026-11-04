@@ -67,9 +67,7 @@ export default function OpenSourceB() {
                             </h2>
                             {/* 20px at every band, phones included, as on the live page */}
                             <p className="w-full text-lede text-held">
-                                Change “swap” points of glyphs in your own <RecalLink>ReCal Sans</RecalLink> OFL Fork
-                                ReBuilder, or change the default set, remap the optical size for large print or 5-foot
-                                TV display.
+                                Slide one axis, switch on a feature, or fork the font and make it your own.
                             </p>
                         </div>
                     }
