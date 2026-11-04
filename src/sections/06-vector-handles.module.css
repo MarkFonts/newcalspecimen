@@ -1,0 +1,19 @@
+/* 06 · Vector Handles: dark-mode colors for VariableMorph's three glyph layers.
+   The component hard-codes them inline (#242424, #898989, #242424, in that DOM order)
+   with no color prop, so in dark mode they are overridden here: the two dark layers take
+   the foreground, the grey ss02 layer the muted foreground. Light mode keeps the source
+   colors. Remove this once the component takes colors as props. */
+:global(.dark) .morph > div > div:nth-child(odd) {
+    color: var(--foreground) !important;
+}
+:global(.dark) .morph > div > div:nth-child(2) {
+    color: var(--muted-foreground) !important;
+}
+
+/* prefers-reduced-motion: the morph loops forever and the component has no switch, so
+   under reduce the three layers are pinned to the first drawing (MORF 0). */
+@media (prefers-reduced-motion: reduce) {
+    .morph > div > div {
+        font-variation-settings: "MORF" 0, "opsz" 300 !important;
+    }
+}

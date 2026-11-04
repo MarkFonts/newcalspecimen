@@ -1,0 +1,13 @@
+/* 18 · Opentype new: what Tailwind classes can't say.
+   The component writes its hover label's second half in a literal #E1E2E3 (a pale grey
+   meant for a light card). Inline, so it takes !important to theme it; scoped to this
+   section. In dark it has to sit BELOW the label color, so it's a low-alpha white. */
+.tiles span[style*="italic"] {
+    color: var(--fp-feature-ghost, #e1e2e3) !important;
+}
+.tiles {
+    --fp-feature-ghost: #e1e2e3;
+}
+:global(.dark) .tiles {
+    --fp-feature-ghost: rgba(255, 255, 255, 0.28);
+}

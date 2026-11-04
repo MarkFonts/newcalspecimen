@@ -1,0 +1,312 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   cal.com/font, Tailwind v4 CSS-first setup, written to Cal.com's conventions.
+   In Cal.com's repo their own globals already hold the tokens below; bring over only
+   the breakpoints and the page wrapper classes.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Dark mode the way Cal.com does it: a `.dark` class on <html>, used as `dark:`. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Cal.com's semantic tokens (shadcn names), read from cal-staging.com on 2026-11-02. */
+:root {
+    --radius: 0.625rem;
+    --background: #fff;
+    --foreground: #242424;
+    --card: #fff;
+    --card-foreground: #242424;
+    --popover: #fff;
+    --popover-foreground: #242424;
+    --primary: #242424;
+    --primary-foreground: #fff;
+    --secondary: #f4f4f4;
+    --secondary-foreground: #242424;
+    --muted: #f4f4f4;
+    --muted-foreground: #6b6b6b;
+    --accent: #f4f4f4;
+    --accent-foreground: #242424;
+    --destructive: #e40014;
+    --border: #e5e5e5;
+    --input: #e5e5e5;
+    --ring: #a3a3a3;
+}
+
+.dark {
+    --background: #191919;
+    --foreground: #fafafa;
+    --card: #1f1f1f;
+    --card-foreground: #fafafa;
+    --popover: #1f1f1f;
+    --popover-foreground: #fafafa;
+    --primary: #e5e5e5;
+    --primary-foreground: #171717;
+    --secondary: #262626;
+    --secondary-foreground: #fafafa;
+    --muted: #262626;
+    --muted-foreground: #a1a1a1;
+    --accent: #262626;
+    --accent-foreground: #fafafa;
+    --destructive: #ff6568;
+    --border: #ffffff1a;
+    --input: #ffffff26;
+    --ring: #737373;
+
+}
+
+/* Tokens → utilities: bg-background, text-foreground, border-border, text-muted-foreground… */
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    /* The CSS variables come from next/font/local (src/fonts.ts), set on <html>.
+       Two text classes (README):
+         font-sans  = var(--font-cal-sans), the Cal Sans Cal.com's site already serves. It is
+                      their own variable, so on their site this line is theirs and resolves
+                      to their build. Text ABOUT the font, and what <body> inherits.
+         font-demo  = the port's own Cal Sans 2.011 (--font-cal-sans-demo). Anything that SHOWS
+                      the font, or needs ital, cvXX, ssXX, or opsz above 32. */
+    --font-sans: var(--font-cal-sans), ui-sans-serif, system-ui, sans-serif;
+    --font-demo: var(--font-cal-sans-demo), ui-sans-serif, system-ui, sans-serif;
+    --font-glyphs: var(--font-cal-sans-full), var(--font-cal-sans-demo), ui-sans-serif, sans-serif;
+    --font-mono: var(--font-paper-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Breakpoints. Tailwind's defaults stay (sm 640, md 768, lg 1024, xl 1280, 2xl 1536);
+   these add Framer's band edges plus Cal.com's 1440, in rem so they sort with the
+   defaults. Mobile-first, like every Tailwind screen:
+
+     (no prefix)  ≤389       Framer "small phone"
+     bp390:       390–809    Framer "phone"      (and up)
+     bp810:       810–1199   Framer "tablet"     (and up)
+     bp1200:      1200–1919  Framer "desktop"    (and up)
+     bp1440:      Cal.com's own 1440 screen; Framer has no band here
+     bp1920:      ≥1920      Framer "large desktop", the base of Framer's CSS
+
+   Framer's bands do not inherit from each other, Tailwind's do: restate a value at every
+   band where it differs. `max-bp810:` is "below 810" (Framer's max-width:809.98px). */
+@theme {
+    --breakpoint-bp390: 24.375rem;
+    --breakpoint-bp810: 50.625rem;
+    --breakpoint-bp1200: 75rem;
+    --breakpoint-bp1440: 90rem;
+    --breakpoint-bp1920: 120rem;
+}
+
+@layer base {
+    *,
+    ::before,
+    ::after {
+        border-color: var(--border);
+    }
+    html {
+        background-color: var(--background);
+        color: var(--foreground);
+    }
+}
+
+/* ── Page wrappers ────────────────────────────────────────────────────────────────
+   Structure (as on cal-staging.com/font):
+     main > article > div.comark-content.page-content > section.page-measure.section-y
+   Cal.com's site defines page-measure and section-y itself. These stand-ins carry the
+   Framer page's geometry; in Cal.com's repo, drop these two rules
+   and check that their versions give the same numbers, or rename these. */
+@layer components {
+    /* Framer's Main: one centered column, no gap. Rhythm comes from each section's own
+       height and the space between sections (below). */
+    .page-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        overflow: clip;
+        background-color: var(--background);
+        color: var(--foreground);
+    }
+
+    /* The space between sections (Mark, 2026-11-03: no divider lines, "more default padding
+       between sections"). Cal.com's own section rhythm from staging's section-y: 72px on
+       phones, 96px from 810, 128px from 1200. The first section has nothing above it. The one
+       exception is Framer's: no space between 15 (typer) and 16 (waterfall sample) below 810. */
+    .page-content > section + section {
+        margin-top: 72px;
+    }
+    @media (min-width: 810px) {
+        .page-content > section + section {
+            margin-top: 96px;
+        }
+    }
+    @media (min-width: 1200px) {
+        .page-content > section + section {
+            margin-top: 128px;
+        }
+    }
+    @media (max-width: 809.98px) {
+        .page-content > #waterfall-sample {
+            margin-top: 0;
+        }
+    }
+
+    /* Round 2: Cal.com's own page-measure, copied from their CSS (2026-11-03), so a section's
+       widest block is exactly as wide as staging's: 342 at 390, 706 at 810, 896 at 1000,
+       1096 at 1200, and 1264 from about 1370 up. Their rule replaces this one on drop-in. */
+    .page-measure {
+        position: relative;
+        width: calc(100% - 48px);
+        max-width: 1320px;
+        margin-inline: auto;
+        padding-inline: 28px;
+    }
+    @media (max-width: 809.98px) {
+        .page-measure {
+            width: calc(100% - 16px);
+            padding-inline: 16px;
+        }
+    }
+
+    /* The sections that have to run nearly the whole screen (Mark, 2026-11-03): the typing
+       cards (16) and columns of text (17), plus the Hero's pointer stage, which has
+       no visible edge. This is round 1's Framer shell: max-width 1801px, 12px gutter. This
+       class is the port's own and moves over with it. */
+    .page-wide {
+        position: relative;
+        width: 100%;
+        max-width: 1801px;
+        margin-inline: auto;
+        padding-inline: 12px;
+    }
+
+    /* Framer's sections add no vertical padding (the shell is padding: 0 12px).
+       scroll-margin-top keeps anchor jumps clear of Cal.com's sticky nav (their
+       scroll-mt-20). */
+    .section-y {
+        padding-block: 0;
+        scroll-margin-top: 5rem;
+    }
+
+    /* The shell every section shares (src/sections/Section.tsx): a flex row, centered, with a
+       10px gap, clipping overflow. A section changes it with utilities (flex-col, gap-6,
+       overflow-visible), which beat this because it sits in the components layer. */
+    .section-shell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        overflow: clip;
+    }
+}
+
+/* ── Text styles ──────────────────────────────────────────────────────────────────
+   Named by role, on top of the two font classes (README, "Two text classes"): they carry
+   the settings of text that talks ABOUT the font, so a section says what a piece of text
+   is and the numbers live here. Change what a subhead is, here, once.
+
+     text-subhead  the heading of a block: foreground color, "wght" 400 "GEOM" 50
+     text-lede     the copy under it: muted color, "wght" 400 "GEOM" 25
+     text-held     with either: keeps the 20px size on phones, where the live Framer page
+                   holds some headings and copy at 20 instead of dropping them to 16
+
+   Both are 16px / 1.5 on phones and 20px / 1.5 from 810. Text that SHOWS the font (the
+   specimens, the demos) states its axes where it sits instead. */
+:root {
+    /* The axes behind the two roles, for the few spots that need them without the rest. */
+    --fvs-subhead: "wght" 400, "GEOM" 50;
+    --fvs-lede: "wght" 400, "GEOM" 25;
+}
+@layer components {
+    .text-subhead,
+    .text-lede {
+        font-size: 16px;
+        line-height: 1.5;
+    }
+    .text-subhead {
+        color: var(--foreground);
+        font-variation-settings: var(--fvs-subhead);
+    }
+    .text-lede {
+        color: var(--muted-foreground);
+        font-variation-settings: var(--fvs-lede);
+    }
+    @media (min-width: 810px) {
+        .text-subhead,
+        .text-lede {
+            font-size: 20px;
+        }
+    }
+    /* After the media rule, so it wins at every width. */
+    .text-held {
+        font-size: 20px;
+    }
+}
+
+/* ── Reveal (round 2) ─────────────────────────────────────────────────────────────
+   Cal.com's "fade in the next block" (cal-staging.com's `reveal` + useArrived), applied
+   by src/lib/Reveal.tsx: it sets data-reveal on blocks below the fold, then data-in as
+   each block's top crosses 70% of the viewport. 24px rise, 1s, --ease-hp, --i × 100ms.
+   "fade" blocks already have a transform of their own, so they only fade. */
+:root {
+    --ease-hp: cubic-bezier(0.19, 1, 0.22, 1);
+    /* Cal.com's large plate corner: rounded-[28px], max-tablet:rounded-[20px]. */
+    --radius-plate: 28px;
+}
+@media (max-width: 809.98px) {
+    :root {
+        --radius-plate: 20px;
+    }
+}
+/* Stand-in for Cal.com's own ultrawide rule, so this previews as it will ship. Drop on move. */
+@media (min-width: 2200px) {
+    html {
+        zoom: 1.25;
+    }
+}
+@media (min-width: 2560px) {
+    html {
+        zoom: 1.5;
+    }
+}
+@media (min-width: 3200px) {
+    html {
+        zoom: 2;
+    }
+}
+/* The transition is on the arrived state only, so hiding a block is instant. */
+[data-reveal][data-in] {
+    transition: opacity 1s var(--ease-hp), translate 1s var(--ease-hp);
+    transition-delay: calc(var(--i, 0) * var(--reveal-step, 100ms));
+}
+[data-reveal]:not([data-in]) {
+    opacity: 0;
+}
+[data-reveal="rise"]:not([data-in]) {
+    translate: 0 24px;
+}
+/* Once a block is in, Reveal.tsx removes both attributes, so none of this stays on it. */
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+        opacity: 1;
+        translate: none;
+        transition: none;
+    }
+}

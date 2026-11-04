@@ -1,0 +1,36 @@
+/* 14 · Weights: the fit-to-longest sizing that Tailwind classes can't say.
+
+   CalFitSource publishes `--cal-fit` on <html> once it has measured; every `.cal-fit`
+   row takes that size (Framer's withCalFitReceiver did the same with
+   `.cal-fit, .cal-fit * { font-size: var(--cal-fit) !important }`).
+
+   Before it has measured (server HTML, and until hydration) `--cal-fit` is unset, and on
+   the live page the rows fall back to 16px. Here they fall back to `--fit-seed`: the
+   same fit, worked out in CSS. The wrapper is an inline-size container, so 100cqw is the
+   source's column width; the widths are the two source lines' natural widths at 100px in
+   Cal Sans 2.011 (opsz 45, wght 600, GEOM 0, italic), measured in Chrome:
+     "Cal Sans A11y SemiBold Italic"  1266.59px   (from 810)
+     "A11y SemiBold Italic"            877.58px   (below 810)
+   Re-measure if the font file changes. */
+.fit {
+    container-type: inline-size;
+    --fit-seed: max(25px, 100cqw * 100 / 877.58);
+}
+@media (min-width: 810px) {
+    .fit {
+        --fit-seed: max(30px, 100cqw * 100 / 1266.59);
+    }
+}
+
+.fit :global(.cal-fit) {
+    font-size: var(--cal-fit, var(--fit-seed));
+}
+
+/* The source itself renders at 100px on the server (its initial state), in a 125px box.
+   Until it publishes, give it the seed size instead. */
+:global(html:not([style*="--cal-fit"])) .source > div {
+    height: round(up, var(--fit-seed) * 1.25, 1px) !important;
+}
+:global(html:not([style*="--cal-fit"])) .source span {
+    font-size: var(--fit-seed) !important;
+}

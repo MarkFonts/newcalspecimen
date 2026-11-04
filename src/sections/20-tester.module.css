@@ -1,0 +1,103 @@
+/* 20 · Tester: themes the two testers' hard-coded UI colors to Cal.com's tokens without
+   editing the components (they're maintained as Framer code components).
+
+   The colors are inline styles, so the overrides need !important, and they're matched on
+   the style attribute, which comes in two spellings: the server writes React's
+   `background:#ffffff`, and after any client-side style update the browser re-serializes
+   it as `background: rgb(255, 255, 255)`. Every rule lists both. Scoped to .testers. */
+
+.testers {
+    /* the testers' own surfaces: the card */
+    --fp-tt-surface: var(--card);
+    /* active segment of a segmented toggle: white on the light rail */
+    --fp-tt-pill: var(--card);
+    /* KaossTester's pad cells (#e9e9e9 on white): 9% ink over the card */
+    --fp-tt-pad: color-mix(in srgb, var(--foreground) 9%, var(--card));
+}
+:global(.dark) .testers {
+    /* on the dark rail the active segment has to be the LIGHTER one */
+    --fp-tt-pill: color-mix(in srgb, var(--foreground) 16%, var(--card));
+}
+
+/* Surfaces: CustomTypeTester's <section>, KaossTester's root and board (white). The
+   segmented-toggle buttons also say #ffffff when active; they're handled below. */
+.testers [style*="background:#ffffff" i],
+.testers [style*="background: rgb(255, 255, 255)"] {
+    background: var(--fp-tt-surface) !important;
+}
+.testers button[style*="background:#ffffff" i],
+.testers button[style*="background: rgb(255, 255, 255)"] {
+    background: var(--fp-tt-pill) !important;
+}
+
+/* KaossTester's two fades into the surface (top band, and above the board). */
+.testers [style*="linear-gradient(to top"] {
+    background: linear-gradient(to top, transparent, var(--fp-tt-surface)) !important;
+}
+/* (the browser drops the default "to bottom" when it re-serializes the attribute) */
+.testers [style*="linear-gradient(to bottom"],
+.testers [style*="linear-gradient(rgba(255, 255, 255, 0)"] {
+    background: linear-gradient(to bottom, transparent, var(--fp-tt-surface)) !important;
+}
+
+/* Rails and tracks: #F1F1F1. */
+.testers [style*="background:#F1F1F1" i],
+.testers [style*="background: rgb(241, 241, 241)"] {
+    background: var(--muted) !important;
+}
+
+/* KaossTester pad cells: #e9e9e9. */
+.testers [style*="background:#e9e9e9" i],
+.testers [style*="background: rgb(233, 233, 233)"] {
+    background: var(--fp-tt-pad) !important;
+}
+
+/* Ink: the type, the values, the active toggle text, the pad dot, the unlocked slider
+   handle (framer-motion writes background-color). "color: rgb(36…" also matches inside
+   "background-color: rgb(36…"; harmless, the rule below sets that background anyway. */
+.testers [style*="color:#242424" i],
+.testers [style*="color: rgb(36, 36, 36)"] {
+    color: var(--foreground) !important;
+}
+.testers [style*="background:#242424" i],
+.testers [style*="background: rgb(36, 36, 36)"],
+.testers [style*="background-color: rgb(36, 36, 36)"] {
+    background: var(--foreground) !important;
+}
+
+/* Quiet text: labels, inactive toggle text (#8E8E8E), the phone hint (#acacac). */
+.testers [style*="color:#8E8E8E" i],
+.testers [style*="color: rgb(142, 142, 142)"],
+.testers [style*="color:#acacac" i],
+.testers [style*="color: rgb(172, 172, 172)"] {
+    color: var(--muted-foreground) !important;
+}
+
+/* CustomTypeTester's range inputs (its injected .cs-tt-slider rules, outranked here). */
+.testers :global(.cs-tt-slider) {
+    background: var(--muted);
+}
+.testers :global(.cs-tt-slider)::-webkit-slider-thumb {
+    background: var(--foreground);
+}
+.testers :global(.cs-tt-slider)::-moz-range-thumb {
+    background: var(--foreground);
+}
+
+/* Both reset icons: the refreshColor prop is an SVG fill attribute, which CSS outranks. */
+.testers path[fill-rule="evenodd"] {
+    fill: var(--muted-foreground);
+}
+
+/* KaossTester is a fixed 320 × 640 box (its root has min-width 320). On the live page
+   it pokes ~7px into the card's 20px padding at 390 and 375. Here the card's side
+   padding shrinks to whatever is left around the 320 and the 1px borders (12px at 390,
+   4.5px at 375), so the
+   box sits inside the card's content box; under 364px viewports it gives up its 320 floor
+   and takes the card's width instead of overflowing. */
+.kaossSlot {
+    width: min(320px, 100%);
+}
+.kaossSlot > div {
+    min-width: 0 !important;
+}

@@ -1,0 +1,55 @@
+/* 04 · scroll-container: CalGraphics hard-codes its letter color #242424 (no color prop),
+   which vanishes on a dark page. In dark mode, from outside the component:
+   - the word container's own color (the static letters inherit it) → --foreground;
+   - each morphing letter face that framer-motion has set to #242424 → --foreground.
+   The orange, blue, and green step colors and the white badge text are untouched.
+   The badge's dark "UI" face (#242424 fill, white text) is left as artwork.
+
+   Structure: .graphic > root div > [style, badge motion.div, word div, measure div]. */
+
+:global(.dark) .graphic > div {
+    color: var(--foreground) !important;
+}
+:global(.dark) .graphic > div > div:nth-of-type(2) [style*="color: rgb(36, 36, 36)"],
+:global(.dark) .graphic > div > div:nth-of-type(2) [style*="color: rgba(36, 36, 36"] {
+    color: var(--foreground) !important;
+}
+
+/* The end of the pin (round 2). --line is the two-line text block: 2 × 1.05 × the font
+   size, plus the 10px gap. --top and --mark place the word-mark as Framer did (190px down;
+   phones 25vh + 100px, with the badge on top of the word). --gap is mark to last line. */
+.stack {
+    --line: calc(2 * 1.05 * 26px + 10px);
+    --top: calc(25vh + 100px);
+    --mark: 120px;
+    --gap: 32px;
+}
+@media (min-width: 810px) {
+    .stack {
+        --line: calc(2 * 1.05 * 32px + 10px);
+        --top: 190px;
+        --mark: 88px;
+        --gap: 48px;
+    }
+}
+@media (min-width: 1200px) {
+    .stack {
+        --line: calc(2 * 1.05 * 40px + 10px);
+        --mark: 110px;
+        --gap: 64px;
+    }
+}
+@media (min-width: 1920px) {
+    .stack {
+        --mark: 140px;
+    }
+}
+.pin {
+    height: calc(var(--top) + var(--mark) + var(--gap) + var(--line));
+    padding-top: var(--top);
+}
+/* The same distance to block 2's line as block 2 has to block 1's: a block is 100vh with
+   200px of top padding and centered text, so its text ends at 50vh + 100px + half a line. */
+.last {
+    height: calc(50vh + 100px + var(--line) / 2);
+}

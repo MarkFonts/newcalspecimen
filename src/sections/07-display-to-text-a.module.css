@@ -1,0 +1,67 @@
+/* 07 · Display to text (a): CSS for VariableMorph2.
+
+   1. The label rules the component injects at mount (<style id="calsans-label-styles">),
+      repeated here so the labels are styled from the first paint, not after hydration.
+   2. Dark mode. The component hard-codes its colors inline with no color prop: #242424
+      for the base wordmark layer and the active label, #A1A1A1 for the two alternate
+      layers and the inactive labels. #A1A1A1 is already dark mode's muted foreground, so
+      only the #242424 uses are overridden: the base layer always, and a label while its
+      inline color is the active one. Labels mid-step (a frame or two) and inactive ones
+      read as muted. Remove this once the component takes colors as props. */
+.morph :global(.calsans-labels) {
+    font-family: "Cal Sans 2", -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 16px !important;
+    font-weight: 500;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    letter-spacing: 0px !important;
+    -webkit-font-smoothing: antialiased;
+    text-transform: lowercase;
+    white-space: nowrap;
+}
+
+:global(.dark) .morph > div > div:first-child {
+    color: var(--foreground) !important;
+}
+:global(.dark) .morph :global(.calsans-labels) {
+    color: var(--muted-foreground) !important;
+}
+:global(.dark) .morph :global(.calsans-labels)[style*="36, 36, 36"] {
+    color: var(--foreground) !important;
+}
+
+/* prefers-reduced-motion: the loop runs forever and the component has no switch, so
+   under reduce the wordmark is pinned to the original branding face (MORF 0, the two
+   alternate layers hidden) and the first label is the active one. opsz per Framer band
+   (300 / 250 / 200, as in src/framer/VariableMorph2.tsx). */
+@media (prefers-reduced-motion: reduce) {
+    .morph > div > div:nth-child(-n + 3) {
+        font-variation-settings: "MORF" 0, "opsz" 200 !important;
+    }
+    .morph > div > div:nth-child(2),
+    .morph > div > div:nth-child(3) {
+        opacity: 0 !important;
+    }
+    /* Repeated class: outranks the dark-mode active-label rule above (0,4,0). */
+    .morph :global(.calsans-labels.calsans-labels.calsans-labels.calsans-labels) {
+        color: #a1a1a1 !important;
+    }
+    .morph :global(.calsans-labels.calsans-labels.calsans-labels.calsans-labels:first-child) {
+        color: #242424 !important;
+    }
+    :global(.dark) .morph :global(.calsans-labels.calsans-labels.calsans-labels.calsans-labels:first-child) {
+        color: var(--foreground) !important;
+    }
+}
+@media (prefers-reduced-motion: reduce) and (min-width: 810px) {
+    .morph > div > div:nth-child(-n + 3) {
+        font-variation-settings: "MORF" 0, "opsz" 250 !important;
+    }
+}
+@media (prefers-reduced-motion: reduce) and (min-width: 1200px) {
+    .morph > div > div:nth-child(-n + 3) {
+        font-variation-settings: "MORF" 0, "opsz" 300 !important;
+    }
+}

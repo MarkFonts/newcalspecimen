@@ -1,0 +1,116 @@
+/* 11 · Open Source (a): the two GEOM charts, inlined so the theme reaches them.
+   public/font/11-open-source-a/*.svg are the spec's two Framer images with the embedded
+   base64 fonts removed (the page already loads "Cal Sans 2" and "Paper Mono"), classes and
+   ids prefixed, and every paper, ink, and line color turned into a variable. Brand hues
+   (#ff6b35, #00a0ff, #00c700) and the marker's black drop shadow stay literal. Light values
+   are the originals. Dark follows Mark's dark GeomAxis export  with its neutrals moved onto Cal.com's tokens: the plate is --card,
+   the lines are faint foreground over it at the export's own steps (tick 15%, rule 13%,
+   grid 10%, vgrid 8%), legend text 78%, captions and hatching --muted-foreground.
+   Two whites do opposite jobs and are told apart by role: the marker's fill is a surface
+   (the page, --background, in dark); the label on the ink badge sits on ink (the plate,
+   --card, in dark). */
+
+.chart svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    user-select: none;
+}
+.chart :global(.osa-cs) {
+    font-family: "Cal Sans 2", sans-serif;
+}
+
+/* CalSansVF-GEOM-v10 (≥1200): literal colors on an opaque paper. */
+.v10 {
+    --v10-paper: #fafaf7;
+    --v10-ink: #1a1a1a;
+    --v10-ink2: #3a3a3a;
+    --v10-caption: #9a958a;
+    --v10-vgrid: #e8e6df;
+    --v10-tick: #d4d2cb;
+    --v10-grid: #dcd9d1;
+    --v10-rule: #e0ddd5;
+    --v10-hatch: #999;
+    --v10-onink: #fff; /* the label on the ink badge */
+    --v10-surface: #fff; /* the marker circle's fill */
+    --v10-black: #000; /* the "UI · default" band, its labels, and its ticks */
+}
+.v10 svg {
+    fill: var(--v10-black); /* elements the file leaves at the default black fill */
+}
+.v10 :global(.osa-mono) {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+}
+:global(.dark) .v10 {
+    --v10-paper: var(--card);
+    --v10-ink: var(--foreground);
+    --v10-ink2: color-mix(in srgb, var(--foreground) 78%, var(--card));
+    --v10-caption: var(--muted-foreground);
+    --v10-vgrid: color-mix(in srgb, var(--foreground) 8%, var(--card));
+    --v10-tick: color-mix(in srgb, var(--foreground) 15%, var(--card));
+    --v10-grid: color-mix(in srgb, var(--foreground) 10%, var(--card));
+    --v10-rule: color-mix(in srgb, var(--foreground) 13%, var(--card));
+    --v10-hatch: var(--muted-foreground);
+    --v10-onink: var(--card);
+    --v10-surface: var(--background);
+    --v10-black: var(--foreground);
+}
+
+/* GeomAxis (≤1199): the file already draws with these 15 variables; the light values
+   are the ones it carried on its root. */
+.axis {
+    --bg: #f8f8f8;
+    --fg: #242424;
+    --fg2: #454545;
+    --dim: #a1a1a1;
+    --rule: #e0e0e0;
+    --grid: #dcdcdc;
+    --tick: #d4d4d4;
+    --vgrid: #e8e8e8;
+    --hatch: #a1a1a1;
+    --surface: #ffffff;
+    --onfg: #ffffff;
+    --a11y: #ff6b35;
+    --ui: #242424;
+    --base: #00a0ff;
+    --geo: #00c700;
+}
+.axis :global(.osa-mono) {
+    font-family: "Paper Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+}
+:global(.dark) .axis {
+    --bg: var(--card);
+    --fg: var(--foreground);
+    --fg2: color-mix(in srgb, var(--foreground) 78%, var(--card));
+    --dim: var(--muted-foreground);
+    --rule: color-mix(in srgb, var(--foreground) 13%, var(--card));
+    --grid: color-mix(in srgb, var(--foreground) 10%, var(--card));
+    --tick: color-mix(in srgb, var(--foreground) 15%, var(--card));
+    --vgrid: color-mix(in srgb, var(--foreground) 8%, var(--card));
+    --hatch: var(--muted-foreground);
+    --surface: var(--background);
+    --onfg: var(--card);
+    --ui: var(--foreground);
+}
+
+/* The "ReCal Sans" link: Framer's link preset, #09f, hover #08f, never underlined. */
+.link {
+    color: #0099ff;
+    text-decoration: none;
+}
+.link:hover {
+    color: #0088ff;
+}
+
+/* Round 2: both charts take Cal.com's large plate radius from their container. GeomAxis
+   draws its plate as a rounded rect (rx 129.99 in the 1920-wide frame, so its corner would
+   change with the width), once as the fill and once as the clip; those are squared and the
+   container does the rounding. */
+.chart {
+    border-radius: var(--radius-plate);
+    overflow: hidden;
+}
+.axis svg rect[rx="129.99"] {
+    rx: 0;
+}

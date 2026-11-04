@@ -1,0 +1,303 @@
+/* 12 · Open Source (b): theming CalThreeWaysCard's mini control from outside.
+   The component hard-codes about ten UI colors as inline styles (the spec lists them).
+   It is not edited for the port, so these rules, scoped to .ways, re-point each literal
+   at a token. Inline styles need !important to lose. Each literal is matched in both
+   spellings the attribute can hold: React's server form ("background:#242424") and the
+   browser's own serialization once React has set it ("background: rgb(36, 36, 36)").
+   GEOM band colors (#ff6b35, #009efc, #02c30e) stay literal in both themes. */
+
+/* #242424: the bubble, the UI band, the lit chip */
+.ways [style*="background:#242424" i],
+.ways [style*="background: rgb(36, 36, 36)"],
+.ways [style*="background-color: rgb(36, 36, 36)"] {
+    background: var(--foreground) !important;
+}
+/* #242424 rings: the slider handle and the swap diamonds */
+.ways [style*="solid #242424" i],
+.ways [style*="solid rgb(36, 36, 36)"] {
+    border-color: var(--foreground) !important;
+}
+/* #fff fills: the slider handle and the swap diamonds */
+.ways [style*="background:#fff;" i],
+.ways [style*="background: rgb(255, 255, 255)"],
+.ways [style*="background-color: rgb(255, 255, 255)"] {
+    background: var(--card) !important;
+}
+/* #fff text: the bubble's value and the lit chip's tag */
+.ways [style*=";color:#fff" i],
+.ways [style*=" color: rgb(255, 255, 255)"] {
+    color: var(--card) !important;
+}
+/* #e8e8ea tracks (slider and swap rows) */
+.ways [style*="background:#e8e8ea" i],
+.ways [style*="background: rgb(232, 232, 234)"],
+.ways [style*="background-color: rgb(232, 232, 234)"] {
+    background: color-mix(in srgb, var(--foreground) 10%, var(--card)) !important;
+}
+/* #d5d5d8: the swap editor's current-GEOM line */
+.ways [style*="background:#d5d5d8" i],
+.ways [style*="background: rgb(213, 213, 216)"],
+.ways [style*="background-color: rgb(213, 213, 216)"] {
+    background: color-mix(in srgb, var(--foreground) 20%, var(--card)) !important;
+}
+/* #F3F4F6: an unlit chip */
+.ways [style*="background:#f3f4f6" i],
+.ways [style*="background: rgb(243, 244, 246)"],
+.ways [style*="background-color: rgb(243, 244, 246)"] {
+    background: var(--muted) !important;
+}
+/* #8E8E8E: an unlit chip's tag and an unswapped row label */
+.ways [style*="color:#8e8e8e" i],
+.ways [style*="color: rgb(142, 142, 142)"] {
+    color: var(--muted-foreground) !important;
+}
+/* The cursor: #242424 arrow with a #fff outline (SVG attributes, so no !important) */
+.ways svg path[fill="#242424"] {
+    fill: var(--foreground);
+    stroke: var(--card);
+}
+
+/* Dark: Mark's dark CalThreeWays export  on
+   Cal.com's tokens. Its "paper" (the handle and diamond fills, the bubble's value, the lit
+   chip's tag, the cursor's outline) is the page, so --background, a step darker than the
+   --card plate; the current-GEOM line is the chip ink at 45%. Its tracks are chip-colored,
+   but --muted sits only 7 levels above --card and the tracks all but vanish, so they keep
+   the 10% foreground mix above, which is the export's own step. Light keeps the rules
+   above. */
+:global(.dark) .ways [style*="background:#fff;" i],
+:global(.dark) .ways [style*="background: rgb(255, 255, 255)"],
+:global(.dark) .ways [style*="background-color: rgb(255, 255, 255)"] {
+    background: var(--background) !important;
+}
+:global(.dark) .ways [style*=";color:#fff" i],
+:global(.dark) .ways [style*=" color: rgb(255, 255, 255)"] {
+    color: var(--background) !important;
+}
+:global(.dark) .ways [style*="background:#d5d5d8" i],
+:global(.dark) .ways [style*="background: rgb(213, 213, 216)"],
+:global(.dark) .ways [style*="background-color: rgb(213, 213, 216)"] {
+    background: color-mix(in srgb, var(--muted-foreground) 45%, var(--card)) !important;
+}
+:global(.dark) .ways svg path[fill="#242424"] {
+    stroke: var(--background);
+}
+
+/* Links: Framer's link preset, #09f, hover #08f, never underlined. */
+.link {
+    color: #0099ff;
+    text-decoration: none;
+}
+.link:hover {
+    color: #0088ff;
+}
+
+/* The three ways (round 2), after cal-staging.com's step rows: rows 8px apart, 22px bold titles
+   at 19px on phones, one row open at a time.
+   The text and rows start at the left edge of the page's 800px headline column, and the stage
+   ends at the full column's right edge. The heading's top meets the stage's top, and the last
+   row's bottom meets its bottom, so the stage is exactly as tall as the left side needs with
+   the longest caption open. Below 810 it stacks: text, stage, rows. */
+.tabs {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr;
+    column-gap: 48px;
+    row-gap: 40px;
+    padding-left: max(0px, (100% - 800px) / 2);
+}
+.tabIntro {
+    grid-column: 1;
+    grid-row: 1;
+}
+.tabRows {
+    display: grid;
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+    align-items: end;
+}
+.tabSizer,
+.tabList {
+    display: grid;
+    grid-area: 1 / 1;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.tabSizer {
+    visibility: hidden;
+}
+.tab {
+    position: relative;
+    border-radius: 22px;
+    background: color-mix(in srgb, var(--foreground) 5%, var(--background));
+    transition: background-color 150ms ease-out;
+}
+.tab[data-open] {
+    background: var(--card);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+.tab:has(.tabTitle:focus-visible) {
+    outline: 2px solid var(--foreground);
+    outline-offset: 2px;
+}
+.tabTitle {
+    display: block;
+    width: 100%;
+    padding: 20px 24px;
+    border-radius: 22px;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1.15;
+    text-align: left;
+    outline: none;
+    transition: color 200ms ease-out;
+}
+.tab[data-open] .tabTitle {
+    padding-bottom: 8px;
+    color: var(--foreground);
+    cursor: default;
+}
+.tabBody {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 300ms var(--ease-hp);
+}
+.tab[data-open] .tabBody {
+    grid-template-rows: 1fr;
+}
+.tabBody > div {
+    min-height: 0;
+    overflow: hidden;
+}
+.tabBody p {
+    padding: 0 24px 20px;
+    color: var(--muted-foreground);
+    font-size: 16px;
+    line-height: 1.45;
+    text-wrap: pretty;
+}
+.tabStage {
+    display: grid;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--radius-plate);
+    background: color-mix(in srgb, var(--foreground) 4%, var(--background));
+    /* The unlit chips use --muted, which would vanish into the plate. */
+    --muted: color-mix(in srgb, var(--foreground) 9%, var(--background));
+}
+.tabStage > div {
+    grid-area: 1 / 1;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease-out;
+}
+.tabStage > div[data-open] {
+    opacity: 1;
+}
+@media (max-width: 1199.98px) {
+    .tabs {
+        column-gap: 32px;
+        row-gap: 32px;
+    }
+}
+@media (max-width: 809.98px) {
+    .tabs {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: none;
+        row-gap: 20px;
+    }
+    .tabIntro,
+    .tabStage,
+    .tabRows {
+        grid-column: 1;
+        grid-row: auto;
+    }
+    .tabRows {
+        align-self: start;
+        align-items: start;
+    }
+    .tabStage {
+        min-height: 292px;
+    }
+    .tab,
+    .tabTitle {
+        border-radius: 16px;
+    }
+    .tabTitle {
+        padding: 16px 20px;
+        font-size: 19px;
+    }
+    .tabBody p {
+        padding: 0 20px 16px;
+    }
+}
+
+/* The open row's progress stroke, Cal.com's hp-story-progress as is: a hook that draws around
+   the row's left side over the row's time. Rows advance when it finishes, so pausing it pauses
+   the advance. */
+.tabProgress {
+    --line: 4px;
+    --hook: 72px;
+    --bend: calc(22px + var(--line));
+    --end: calc(var(--hook) + var(--line));
+    --stroke: #e8e8e7;
+    position: absolute;
+    top: calc(-1 * var(--line));
+    bottom: calc(-1 * var(--line));
+    left: calc(-1 * var(--line));
+    width: var(--hook);
+    pointer-events: none;
+    border: var(--line) solid var(--stroke);
+    border-right: 0;
+    border-radius: var(--bend) 0 0 var(--bend);
+    clip-path: polygon(var(--end) 0, var(--end) 0, var(--end) var(--bend), var(--end) var(--bend), var(--end) 100%, var(--end) 100%);
+    animation: storyProgress 7000ms linear forwards;
+}
+:global(.dark) .tabProgress {
+    --stroke: #333333;
+}
+.tabProgress::before,
+.tabProgress::after {
+    position: absolute;
+    right: calc(-1 * var(--line) / 2);
+    width: var(--line);
+    height: var(--line);
+    border-radius: 999px;
+    background: var(--stroke);
+    content: "";
+}
+.tabProgress::before {
+    top: calc(-1 * var(--line));
+}
+.tabProgress::after {
+    bottom: calc(-1 * var(--line));
+}
+.tabs:hover .tabProgress,
+.tabs:focus-within .tabProgress,
+.tabs[data-offscreen] .tabProgress {
+    animation-play-state: paused;
+}
+@media (max-width: 809.98px) {
+    .tabProgress {
+        --line: 3px;
+        --hook: 56px;
+        --bend: calc(16px + var(--line));
+    }
+}
+@keyframes storyProgress {
+    8% {
+        clip-path: polygon(0 0, var(--end) 0, var(--end) var(--bend), 0 var(--bend), 0 100%, 0 100%);
+    }
+    92% {
+        clip-path: polygon(0 0, var(--end) 0, var(--end) calc(100% - var(--bend)), 0 calc(100% - var(--bend)), 0 100%, 0 100%);
+    }
+    to {
+        clip-path: polygon(0 0, var(--end) 0, var(--end) calc(100% - var(--bend)), var(--end) calc(100% - var(--bend)), var(--end) 100%, 0 100%);
+    }
+}

@@ -1,0 +1,49 @@
+/* 02 · Info: the FAQ answer text (Framer preset framer-styles-preset-16d3d8n and the
+   link preset framer-styles-preset-1d6403i), spec "Typography". */
+
+.answer {
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: -0.2px;
+    font-variation-settings: "wght" 500, "GEOM" 25;
+    color: var(--muted-foreground);
+}
+.answer :where(p) {
+    margin: 0;
+}
+/* 12px between paragraphs; a list follows its paragraph with no gap, as on the live page. */
+.answer > p + p {
+    margin-top: 12px;
+}
+.answer ul {
+    margin: 0;
+    padding-inline-start: 0;
+    list-style: none;
+}
+.answer li {
+    position: relative;
+    padding-inline-start: 2ch;
+}
+.answer li::before {
+    content: "•";
+    position: absolute;
+    inset-inline-start: 0;
+}
+.answer a {
+    color: var(--foreground);
+    text-decoration: none;
+}
+.answer a:hover {
+    color: color-mix(in srgb, var(--foreground) 50%, transparent);
+}
+/* Framer's preset sets its bold run to the regular values ("wght" 500, same color), so a
+   <strong> looks like the text around it on the live page. */
+.answer strong {
+    font-weight: inherit;
+}
+/* "depreciated." in Release history: the italic comes from the font's ital axis, which an
+   inherited font-variation-settings would otherwise pin to 0. The <em> carries font-demo
+   (the port's own 2.011), because the Cal Sans Cal.com serves has no ital axis. */
+.answer em {
+    font-variation-settings: "wght" 500, "GEOM" 25, "ital" 1;
+}

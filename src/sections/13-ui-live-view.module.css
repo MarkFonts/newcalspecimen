@@ -1,0 +1,6 @@
+/* 13 · UI live view. Round 2: CalPreviewPage's dashboard frame (.coss-shell, 12px corners
+   in the component) takes Cal.com's large plate radius. Its 1px edge and fill stay: they
+   are the edge of the app window being shown. */
+.preview :global(.coss-shell) {
+    border-radius: var(--radius-plate);
+}

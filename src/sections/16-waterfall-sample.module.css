@@ -1,0 +1,93 @@
+/* 16 · Waterfall sample: what Tailwind classes can't say.
+
+   1. The pre-fit box. Each card scales its line to its width in the browser; until then
+      (server HTML, hydration, font load) the card is invisible and held at the height
+      the fit will give, so nothing below jumps. The column is an inline-size container,
+      so 100cqw is the card width; --natural is the line's width at 100px (Cal Sans
+      2.011, opsz 45, its weight and GEOM; measured in Chrome). The card's own formula:
+        fontPx = 100 × width / natural
+        height = 32 header + headerGap + 0.88 × fontPx + padding-bottom
+        padding-bottom = 5, or 5 + (fontPx − 5) × 15/145 up to 150, then 20 + (fontPx − 150) × 0.08
+      (the piecewise padding is concave, so it's the min of its two lines, floored at 5). */
+.column {
+    container-type: inline-size;
+}
+
+.card {
+    color: var(--muted-foreground); /* the reset arrow's currentColor */
+    --gap: 8px;
+}
+@media (min-width: 810px) and (max-width: 1199.98px) {
+    .card[data-tablet-gap="5"] {
+        --gap: 5px;
+    }
+}
+@media (max-width: 809.98px) {
+    .card {
+        --gap: 2px;
+    }
+}
+
+.card:not([data-ready]) {
+    --f: calc(100cqw * 100 / var(--natural));
+    height: calc(
+        32px + var(--gap) + 0.88 * var(--f) +
+            max(5px, min(5px + (var(--f) - 5px) * 15 / 145, 20px + (var(--f) - 150px) * 0.08))
+    );
+    overflow: clip;
+    visibility: hidden;
+}
+
+/* 2. Dark mode. The card and its SharedTester controls hard-code light colors as inline
+      styles and an injected stylesheet (#242424 text, #111 line, #F3F4F6 tracks, a white
+      active pill, #DADADA outlines). Until those two files take tokens (see the report),
+      these rules repaint them in dark. Light keeps the literals, which match the live
+      page. The inline ones need !important. */
+:global(.dark) .card [contenteditable] {
+    color: var(--foreground) !important;
+}
+/* the name label: first child of the desktop header row */
+:global(.dark) .card > div > div:first-child > div:first-child > div:first-child:not(:has(select)) {
+    color: var(--foreground) !important;
+}
+/* mobile dropdowns */
+:global(.dark) .card select {
+    color: var(--foreground) !important;
+    color-scheme: dark;
+}
+:global(.dark) .card select + svg {
+    color: var(--foreground) !important;
+}
+/* the GEOM pill (second child of the desktop header row) and its buttons; the active one
+   is the button with a shadow */
+:global(.dark) .card > div > div:first-child > div:first-child > div:nth-child(2):not(:global(.cs-axis-toggles)) {
+    background: var(--muted) !important;
+}
+:global(.dark) .card button:not([class]) {
+    background: transparent !important;
+    color: var(--muted-foreground) !important;
+}
+:global(.dark) .card button:not([class]):not([style*="box-shadow:none"]):not([style*="box-shadow: none"]) {
+    background: color-mix(in srgb, var(--foreground) 14%, var(--muted)) !important;
+    color: var(--foreground) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+}
+/* V / h / I */
+:global(.dark) .card :global(.cs-axis-toggles):not(:global(.cs-axis-toggles--mobile)) {
+    background: var(--muted);
+}
+:global(.dark) .card :global(.cs-axis-btn) {
+    color: var(--muted-foreground);
+}
+:global(.dark) .card :global(.cs-axis-btn):hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--foreground);
+}
+:global(.dark) .card :global(.cs-axis-btn--mobile) {
+    border-color: var(--border);
+}
+:global(.dark) .card :global(.cs-axis-btn.active) {
+    background: var(--foreground);
+    color: var(--background);
+    border-color: var(--foreground);
+}

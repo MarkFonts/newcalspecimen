@@ -1,0 +1,23 @@
+/* 03 · sticker views: the card's two themed colors (the section passes them to StickerCode
+   as var(--sv-accent) and var(--sv-paper)). Light is the live instance's props; dark is
+   Mark's dark StickerCode export: the accent turns deep green #007e00, a brand decision
+   kept literal, and the sticker plate becomes the theme's card plate. */
+.card {
+    --sv-accent: rgb(208, 226, 111);
+    --sv-paper: #f4f4f4;
+}
+:global(.dark) .card {
+    --sv-accent: #007e00;
+    --sv-paper: var(--card);
+}
+
+/* Round 2: a flat panel on Cal.com's large plate radius. StickerCode hard-codes its card's
+   12px corners, 1px #E1E2E3 border, and shadow (inline, so !important); the corners become
+   --radius-plate, the border and shadow go, in both themes, and the accent fill stays. The
+   stickers keep their own 12px corners (the borderRadius prop). Round 1 themed the border
+   and shadow for dark instead. */
+.card > div > div {
+    border-radius: var(--radius-plate) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}

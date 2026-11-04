@@ -1,0 +1,58 @@
+/* 01 · Hero: dark mode for AnimatedCal2's die-cut sticker, from outside the component
+   (components/AnimatedCal2.tsx is never edited for the port).
+
+   The violator's die-cut body is a 50% white "frost" rect (SVG <rect fill="#ffffff"
+   mask=…>) plus a backdrop blur, over which the foil and the black drop-shadows sit.
+   On a white page that reads as frosted film. On a dark page Round 1 made it an opaque white
+   plate, which lost the point: the die-cut is a clear, matte, grainy film (Mark, 2026-11-03).
+   So in dark mode the rect's fill becomes a pattern (Hero's <svg> defs): a thin white tint
+   plus frozen grain. The mask, so the round stroke, is untouched, and the backdrop blur and
+   foil still run through it. */
+
+:global(.dark) .stage rect[fill="#ffffff"][mask] {
+    fill: url(#hero-film);
+    opacity: 1 !important;
+}
+/* The component's 25% white keyline would turn the clear film grey on a dark page. */
+:global(.dark) .stage text[stroke-opacity="0.25"] {
+    stroke-opacity: 0.08;
+}
+/* The violator is the component root's child that holds the <svg>; the hint sticker
+   (a plain motion.div with text) is untouched. */
+:global(.dark) .stage > div > div:has(> svg) {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2)) !important;
+}
+
+/* The letters on a clear film (dark mode): a white layer under the foil, so they stand off
+   the film. The component's foil base (`foilBase`) is the rect the foil canvas sits on; the
+   foil runs at 70% over the white (Mark's pick, 2026-11-03). */
+:global(.dark) .stage rect[fill="#5a5a63"] {
+    fill: #fff;
+}
+:global(.dark) .stage rect[fill="#5a5a63"] + foreignObject {
+    opacity: 0.7;
+}
+
+/* The word before the component takes over (src/framer/AnimatedCal2.tsx): the component's own
+   centered text at its own fluidFontSize, 82px at 256px wide up to 325px at 1649px wide. */
+.stage {
+    container-type: inline-size;
+}
+.still {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--foreground);
+    font-family: "Cal Sans 2", sans-serif;
+    font-optical-sizing: none;
+    font-size: clamp(82px, 82px + (100cqw - 256px) * 243 / 1393, 325px);
+    font-variation-settings: "opsz" 45, "wght" 400, "GEOM" 25;
+    line-height: 1em;
+    text-align: center;
+    pointer-events: none;
+}
+.still ~ * {
+    visibility: hidden;
+}

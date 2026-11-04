@@ -1,0 +1,28 @@
+/* 05 · 6 Variable Axes: prefers-reduced-motion.
+   CalAxes loops forever and has no reduced-motion switch, so under reduce each specimen
+   is pinned (over its inline, per-frame style) to its axis at 100%, the other axes at
+   their resting values. Remove this once the component honors the setting itself. */
+@media (prefers-reduced-motion: reduce) {
+    .specimen > div {
+        font-style: normal !important;
+    }
+    .specimen[data-axis="opsz"] > div {
+        font-variation-settings: "opsz" 45, "GEOM" 25, "wght" 400, "YTAS" 1440, "SHRP" 0, "ital" 0 !important;
+    }
+    .specimen[data-axis="GEOM"] > div {
+        font-variation-settings: "opsz" 14.001, "GEOM" 100, "wght" 400, "YTAS" 1440, "SHRP" 0, "ital" 0 !important;
+    }
+    .specimen[data-axis="wght"] > div {
+        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 700, "YTAS" 1440, "SHRP" 0, "ital" 0 !important;
+    }
+    .specimen[data-axis="YTAS"] > div {
+        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 1600, "SHRP" 0, "ital" 0 !important;
+    }
+    .specimen[data-axis="SHRP"] > div {
+        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 1440, "SHRP" 100, "ital" 0 !important;
+    }
+    .specimen[data-axis="ital"] > div {
+        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 1440, "SHRP" 0, "ital" 1 !important;
+        font-style: italic !important;
+    }
+}

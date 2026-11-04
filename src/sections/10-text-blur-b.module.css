@@ -1,0 +1,25 @@
+/* 10 · Text with Blur - Animation (b): what Tailwind classes can't say.
+   HOIGrid writes grid-template-columns inline from its `columns` prop. The live page
+   gives it 2 / 2 / 3 / 3 / 4 columns per band; doing that in CSS (not a width hook)
+   keeps the server render right at every width, so it has to beat the inline style. */
+.grid > div {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+@media (min-width: 810px) {
+    .grid > div {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+@media (min-width: 1920px) {
+    .grid > div {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+/* Reduced motion: the wrapper starts the grid paused; the radar rings (a CSS animation
+   inside the component) hold still too. They rest at opacity 0, so they disappear. */
+@media (prefers-reduced-motion: reduce) {
+    .grid span span {
+        animation: none !important;
+    }
+}

@@ -1,0 +1,102 @@
+/* 21 · Glyphset: themes GlyphPicker and its SharedTester controls to Cal.com's tokens
+   without editing them. Scoped to .glyphs; every selector here outranks the component's
+   own injected <style id="cs-gp-exact-styles"> (one class more), whatever the order. */
+
+/* The component's four color variables (it defines them on .cs-gp-container), and its
+   font: the whole Cal Sans 2.011 by its literal name, so every one of the 881 glyphs is
+   drawn from the full file in every browser, not left to the "Cal Sans 2" fall-through. */
+.glyphs :global(.cs-gp-container) {
+    --cs-gp-bg: var(--background);
+    --cs-gp-text: var(--foreground);
+    --cs-gp-gray-dark: var(--muted-foreground);
+    --cs-gp-gray-light: var(--muted);
+    --cs-gp-font-ui: "Cal Sans 2 Full", "Cal Sans 2", system-ui, -apple-system, sans-serif;
+    --cs-gp-font-specimen: "Cal Sans 2 Full", "Cal Sans 2", system-ui, sans-serif;
+}
+
+/* The "Show all" fade (literal white) and pill (literal white on #ddd). */
+.glyphs :global(.cs-gp-right-wrapper)::after {
+    background: linear-gradient(to bottom, transparent, var(--background));
+}
+.glyphs :global(.cs-gp-show-more-btn) {
+    background: var(--card);
+    border-color: var(--border);
+    color: var(--foreground);
+}
+.glyphs :global(.cs-gp-show-more-btn):hover {
+    background: var(--accent);
+}
+
+/* SharedTester's V / h / I toolbar (injected CSS; literal greys). */
+.glyphs :global(.cs-axis-toggles) {
+    background: var(--muted);
+}
+.glyphs :global(.cs-axis-btn) {
+    color: var(--muted-foreground);
+}
+.glyphs :global(.cs-axis-btn):hover {
+    background: color-mix(in srgb, var(--foreground) 6%, transparent);
+    color: var(--foreground);
+}
+.glyphs :global(.cs-axis-btn.active) {
+    background: var(--foreground);
+    color: var(--background);
+}
+
+/* SharedTester's GeomToggle and ChevronSelect are inline-styled: #F3F4F6 rail, #FFFFFF
+   active segment, #242424 / #898989 text. Matched on the style attribute in both of its
+   spellings (React's server string, and the browser's after a client-side update). */
+.glyphs [style*="background:#F3F4F6" i],
+.glyphs [style*="background: rgb(243, 244, 246)"] {
+    background: var(--muted) !important;
+}
+.glyphs button[style*="background:#FFFFFF" i],
+.glyphs button[style*="background: rgb(255, 255, 255)"] {
+    background: var(--fp-gp-pill) !important;
+}
+.glyphs [style*="color:#242424" i],
+.glyphs [style*="color: rgb(36, 36, 36)"] {
+    color: var(--foreground) !important;
+}
+.glyphs [style*="color:#898989" i],
+.glyphs [style*="color: rgb(137, 137, 137)"] {
+    color: var(--muted-foreground) !important;
+}
+.glyphs select option {
+    background: var(--popover);
+    color: var(--popover-foreground);
+}
+.glyphs {
+    --fp-gp-pill: var(--card);
+}
+:global(.dark) .glyphs {
+    /* the active segment has to be lighter than the dark rail */
+    --fp-gp-pill: color-mix(in srgb, var(--foreground) 16%, var(--card));
+}
+
+/* Before hydration the component's CSS isn't on the page yet (it injects it on mount),
+   and 881 unstyled buttons would stretch the page by thousands of pixels, moving every
+   anchor below (#calsans-download). Hold the same two-column box and 1800px cap until
+   its own rules arrive; these match them, so nothing changes once they do. */
+.glyphs :global(.cs-gp-container) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+}
+.glyphs :global(.cs-gp-right-wrapper) {
+    position: relative;
+    max-height: 1800px;
+    overflow: hidden;
+}
+@media (max-width: 428px) {
+    .glyphs :global(.cs-gp-container) {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Round 2 (Mark: no side bars): GlyphPicker draws a 1px vertical rule between its preview
+   and its grid (.cs-gp-panel-right's border-left, ≥810). It goes. The phone layout's
+   bottom edge under the sticky preview stays: it is that sticky header's edge. */
+.glyphs :global(.cs-gp-panel-right) {
+    border-left: 0;
+}
