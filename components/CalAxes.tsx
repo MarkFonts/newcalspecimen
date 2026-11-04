@@ -6,7 +6,7 @@ import {
     useTransform,
     useAnimationFrame,
 } from "framer-motion"
-import { calFont, buildFontFaceCSS, FONT_CONTROLS, type CalFont } from "https://framer.com/m/Shared-Endp4B.js@hk9Lk4UJ9bomCLQADDI6"
+import { calFont, buildFontFaceCSS, FONT_CONTROLS, ytasCss, type CalFont } from "https://framer.com/m/Shared-Endp4B.js@hk9Lk4UJ9bomCLQADDI6"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CalAxes.tsx — Cal Sans 2 single-axis animator.
@@ -37,11 +37,11 @@ const RANGES: Record<string, [number, number]> = {
     opsz: [8, 45],
     GEOM: [0, 100],
     wght: [400, 700],
-    YTAS: [1440, 1600],
+    YTAS: [720, 800],
     SHRP: [0, 100],
     ital: [0, 1],
 }
-const DEFAULTS = { opsz: 14, GEOM: 25, wght: 400, YTAS: 1440, SHRP: 0, ital: 0 }
+const DEFAULTS = { opsz: 14, GEOM: 25, wght: 400, YTAS: 720, SHRP: 0, ital: 0 }
 
 // Cubic ease-in-out ("easy ease"): zero velocity at 0 and 1 → smooth turnarounds.
 const easeInOut = (t: number) =>
@@ -89,7 +89,7 @@ export default function CalAxes(props: any) {
         // withCalSans' forced `auto` it then sizes opsz from the font size: a one-frame
         // flash ~12% narrower. 14.001 renders identically and is never "all default".
         const opsz = a.opsz === 14 ? 14.001 : a.opsz
-        return `"opsz" ${opsz}, "GEOM" ${a.GEOM}, "wght" ${a.wght}, "YTAS" ${a.YTAS}, "SHRP" ${a.SHRP}, "ital" ${a.ital}`
+        return `"opsz" ${opsz}, "GEOM" ${a.GEOM}, "wght" ${a.wght}, "YTAS" ${ytasCss(a.YTAS)}, "SHRP" ${a.SHRP}, "ital" ${a.ital}`
     })
 
     return (
@@ -122,7 +122,7 @@ CalAxes.defaultProps = {
     padding: 24,
     // Commented out — per-axis resting values (a static prop can't tween in a code
     // component; the animated `axis` dropdown replaces the sliders):
-    // opsz: 14, geom: 25, wght: 400, ytas: 1440, shrp: 0, ital: 0,
+    // opsz: 14, geom: 25, wght: 400, ytas: 720, shrp: 0, ital: 0,
 }
 
 addPropertyControls(CalAxes, {
@@ -166,7 +166,7 @@ addPropertyControls(CalAxes, {
     // opsz: { type: ControlType.Number, title: "opsz", defaultValue: 14, min: 8, max: 45, step: 0.1 },
     // geom: { type: ControlType.Number, title: "GEOM", defaultValue: 25, min: 0, max: 100, step: 1 },
     // wght: { type: ControlType.Number, title: "wght", defaultValue: 400, min: 400, max: 700, step: 1 },
-    // ytas: { type: ControlType.Number, title: "YTAS", defaultValue: 1440, min: 1440, max: 1600, step: 1 },
+    // ytas: { type: ControlType.Number, title: "YTAS", defaultValue: 720, min: 720, max: 800, step: 1 },
     // shrp: { type: ControlType.Number, title: "SHRP", defaultValue: 0, min: 0, max: 100, step: 1 },
     // ital: { type: ControlType.Number, title: "ital", defaultValue: 0, min: 0, max: 1, step: 0.01 },
 })

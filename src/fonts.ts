@@ -97,6 +97,13 @@ function face(family: string, url: string, weight: string, style: string, range?
 const both = (family: string, url: string, range?: string) =>
     face(family, url, "400 700", "normal", range) + "\n" + face(family, url, "400 700", "italic", range)
 
+// Which YTAS range the loaded Cal Sans has: 1440-1600 up to 2.012, 720-800 after. Pages can't
+// read a font's axes, so this measures one glyph: eth's advance grows with YTAS, and a font
+// that tops out at 800 draws 800 and 1600 the same width. Only an old font sets the scale
+// (see ytasCss in Shared.tsx). Goes in <head> after LITERAL_FONT_FACES. A canvas can't do
+// this: Safari's ignores a FontFace's variationSettings.
+export const YTAS_RANGE_SCRIPT = `(function(){var d=document,r=d.documentElement,f='400 1000px "Cal Sans 2"';d.fonts.load(f,"\\u00f0").then(function(){var s=d.createElement("span");s.textContent="\\u00f0";s.style.cssText="position:absolute;visibility:hidden;white-space:pre;font:"+f;r.appendChild(s);function w(v){s.style.fontVariationSettings='"YTAS" '+v;return s.getBoundingClientRect().width}var old=w(800)!==w(1600);s.remove();if(old)r.style.setProperty("--ytas-scale","2")})})();`
+
 export const LITERAL_FONT_FACES = [
     // Framer's name for Cal Sans. Two faces, one family: the Latin subset for everything,
     // and the full font for only the code points the subset lacks, declared FIRST so it's

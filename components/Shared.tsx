@@ -155,17 +155,23 @@ async function _readFontRevision(url: string): Promise<string> {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AXIS RANGES — the six Cal Sans v2 variable axes, min / default / max (VISION §1).
-// `wght` floor is 400 (Light/300 dropped). YTAS has no consumer yet — kept for
-// completeness so the table is the single source of truth.
+// `wght` floor is 400 (Light/300 dropped).
 // ─────────────────────────────────────────────────────────────────────────────
 export const AXIS_RANGES = {
     opsz: { min: 8, default: 14, max: 45 },
     GEOM: { min: 0, default: 25, max: 100 },
     wght: { min: 400, default: 400, max: 700 },
-    YTAS: { min: 1440, default: 1440, max: 1600 },
+    YTAS: { min: 720, default: 720, max: 800 },
     SHRP: { min: 0, default: 0, max: 100 },
     ital: { min: 0, default: 0, max: 1 },
 } as const
+
+// YTAS for a value BETWEEN the ends, in font-variation-settings. Cal Sans fonts up to
+// 2.012 have YTAS 1440–1600; later ones have 720–800, and the same outlines. The probe
+// in <head> (src/fonts.ts) sets --ytas-scale to 2 on an old font. The two ends need no
+// scale: browsers clamp to the axis, so a literal 720 is the rest and 1600 the tallest
+// on either font.
+export const ytasCss = (v: number) => `calc(var(--ytas-scale, 1) * ${v})`
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GEOM PRESETS — the v2 remap (VISION §2): A11y=0 / UI=25 (font default) / Base=50 /

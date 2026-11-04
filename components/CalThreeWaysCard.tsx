@@ -30,7 +30,7 @@ import {
 const VER = CAL_SANS
 
 // Non-animated axes rest at the font defaults (mirrors CalAxes).
-const DEFAULTS = { opsz: 14, GEOM: 25, wght: 400, YTAS: 1440, SHRP: 0, ital: 0 }
+const DEFAULTS = { opsz: 14, GEOM: 25, wght: 400, YTAS: 720, SHRP: 0, ital: 0 }
 const DEFAULT_FVS = `"opsz" ${DEFAULTS.opsz}, "GEOM" ${DEFAULTS.GEOM}, "wght" ${DEFAULTS.wght}, "YTAS" ${DEFAULTS.YTAS}, "SHRP" ${DEFAULTS.SHRP}, "ital" ${DEFAULTS.ital}`
 
 // GEOM landing bands from the diagnostic sheet (CalSansVF-GEOM-v10): where the

@@ -22,7 +22,7 @@ export const AXIS_META = {
     spacing: { label: "Tracking", unit: "%", min: -10, max: 10, stops: [-10, 0, 10] },
     size: { label: "Size", unit: "px", min: 8, max: 350, stops: [8, 100, 200, 350] },
     shrp: { label: "Sharp", unit: "", stops: [0, 50, 100] },
-    ytas: { label: "Ascend", unit: "", stops: [1440, 1520, 1600] },
+    ytas: { label: "Ascend", unit: "", stops: [720, 760, 800] },
     geom: { label: "Geom", unit: "", stops: [0, 25, 50, 100] },
     ital: { label: "Italic", unit: "", stops: [0, 1] },
 }
@@ -70,7 +70,7 @@ export function buildAxisToolbarCSS(family: string) {
 .cs-axis-btn:hover { background: rgba(0,0,0,0.04); color: #242424; }
 .cs-axis-btn.active { background: #242424; color: #ffffff; }
 @keyframes cs-axis-cycle-shrp { from { font-variation-settings: "SHRP" 0; } to { font-variation-settings: "SHRP" 100; } }
-@keyframes cs-axis-cycle-ytas { from { font-variation-settings: "YTAS" 1440; } to { font-variation-settings: "YTAS" 1600; } }
+@keyframes cs-axis-cycle-ytas { from { font-variation-settings: "YTAS" calc(var(--ytas-scale, 1) * 720); } to { font-variation-settings: "YTAS" calc(var(--ytas-scale, 1) * 800); } }
 @keyframes cs-axis-cycle-ital { from { font-variation-settings: "ital" 0, "GEOM" 0; } to { font-variation-settings: "ital" 1, "GEOM" 0; } }
 .cs-axis-btn--shrp:hover { animation: cs-axis-cycle-shrp 0.9s ease-in-out infinite alternate; }
 .cs-axis-btn--ytas:hover { animation: cs-axis-cycle-ytas 0.9s ease-in-out infinite alternate; }

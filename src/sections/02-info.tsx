@@ -132,7 +132,7 @@ export const ITEMS: FaqEntry[] = [
                         <br />
                         SHRP: 0–100
                         <br />
-                        YTAS: 1440–1600
+                        YTAS: 720–800
                         <br />
                         opsz: 8–45
                         <br />

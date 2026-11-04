@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
-import { fontVariables, LITERAL_FONT_FACES } from "@/fonts"
+import { fontVariables, LITERAL_FONT_FACES, YTAS_RANGE_SCRIPT } from "@/fonts"
 import { ThemeToggle } from "@/dev/ThemeToggle"
 import "./globals.css"
 
-// Stand-in for Cal.com's root layout. In their repo only two things move over: the font
-// variables on <html> (src/fonts.ts) and the literal @font-face block in <head>.
+// Stand-in for Cal.com's root layout. In their repo only three things move over: the font
+// variables on <html> (src/fonts.ts), and the literal @font-face block and the YTAS probe in <head>.
 // Their layout supplies the nav and footer; this one has neither on purpose.
 
 // This app's own text font, the latest Cal Sans site build from calcom/sans. It's here and not in
@@ -34,6 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <style id="text-font" dangerouslySetInnerHTML={{ __html: TEXT_FONT }} />
                 {/* Families the Framer components ask for by name ("Cal Sans 2", …). */}
                 <style id="literal-font-faces" dangerouslySetInnerHTML={{ __html: LITERAL_FONT_FACES }} />
+                <script dangerouslySetInnerHTML={{ __html: YTAS_RANGE_SCRIPT }} />
             </head>
             <body className="bg-background text-foreground antialiased">
                 {children}

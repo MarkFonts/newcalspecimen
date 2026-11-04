@@ -7,22 +7,22 @@
         font-style: normal !important;
     }
     .specimen[data-axis="opsz"] > div {
-        font-variation-settings: "opsz" 45, "GEOM" 25, "wght" 400, "YTAS" 1440, "SHRP" 0, "ital" 0 !important;
+        font-variation-settings: "opsz" 45, "GEOM" 25, "wght" 400, "YTAS" 720, "SHRP" 0, "ital" 0 !important;
     }
     .specimen[data-axis="GEOM"] > div {
-        font-variation-settings: "opsz" 14.001, "GEOM" 100, "wght" 400, "YTAS" 1440, "SHRP" 0, "ital" 0 !important;
+        font-variation-settings: "opsz" 14.001, "GEOM" 100, "wght" 400, "YTAS" 720, "SHRP" 0, "ital" 0 !important;
     }
     .specimen[data-axis="wght"] > div {
-        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 700, "YTAS" 1440, "SHRP" 0, "ital" 0 !important;
+        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 700, "YTAS" 720, "SHRP" 0, "ital" 0 !important;
     }
     .specimen[data-axis="YTAS"] > div {
         font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 1600, "SHRP" 0, "ital" 0 !important;
     }
     .specimen[data-axis="SHRP"] > div {
-        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 1440, "SHRP" 100, "ital" 0 !important;
+        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 720, "SHRP" 100, "ital" 0 !important;
     }
     .specimen[data-axis="ital"] > div {
-        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 1440, "SHRP" 0, "ital" 1 !important;
+        font-variation-settings: "opsz" 14.001, "GEOM" 25, "wght" 400, "YTAS" 720, "SHRP" 0, "ital" 1 !important;
         font-style: italic !important;
     }
 }

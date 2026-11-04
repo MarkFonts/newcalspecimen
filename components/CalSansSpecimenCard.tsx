@@ -319,7 +319,7 @@ export default function CalSansSpecimenCard(props) {
             fontWeight: weight,
             fontOpticalSizing: "none", // explicit opsz below; WebKit drops opsz = default and auto-sizes over it
             fontStyle: italic ? "italic" : "normal", // the cossui build italicises by file, not by the ital axis
-            fontVariationSettings: `"opsz" ${opsz}, "wght" ${weight}, "GEOM" ${geomValue}, "SHRP" ${sharp ? 100 : 0}, "YTAS" ${ascend ? 1600 : 1440}, "ital" ${italic ? 1 : 0}`,
+            fontVariationSettings: `"opsz" ${opsz}, "wght" ${weight}, "GEOM" ${geomValue}, "SHRP" ${sharp ? 100 : 0}, "YTAS" ${ascend ? 1600 : 720}, "ital" ${italic ? 1 : 0}`,
             color: "#111",
             cursor: "text",
             padding: 0,
