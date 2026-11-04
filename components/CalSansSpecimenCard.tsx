@@ -87,9 +87,12 @@ function observeElement(el: Element, cb: ResizeCallback) {
 }
 
 // iOS Safari scrolls the page to reveal the caret when an editable takes focus, and again
-// as the keyboard opens. Holds the page where it was at the tap, unless the tapped line
-// would end up under the keyboard, where iOS's own scroll is the one we want. The tap point
-// stands in for the caret. The keyboard takes about 45% of the screen before it's measurable.
+// as the keyboard opens. On these scaled lines, undoing that scroll still shows as a snap
+// and an ease back, so a tap takes the focus itself with preventScroll and the scroll never
+// starts. The page is also held where it was at the tap, in case one starts anyway.
+// Neither applies if the tapped line would end up under the keyboard, where iOS's own
+// scroll is the one we want. The tap point stands in for the caret. The keyboard takes
+// about 45% of the screen before it's measurable.
 function useIOSFocusScrollGuard(ref: { current: HTMLElement | null }) {
     useEffect(() => {
         const el = ref.current
@@ -99,25 +102,45 @@ function useIOSFocusScrollGuard(ref: { current: HTMLElement | null }) {
         if (!el || !isIOS) return
         let savedY: number | null = null
         let tapY = 0
+        let tapAt = 0
         let frame = 0
+        const clearsKeyboard = () => {
+            const vv = window.visualViewport
+            const keyboardOpen = !!vv && vv.height < window.innerHeight * 0.8
+            const room = vv ? (keyboardOpen ? vv.height : vv.height * 0.55) : 0
+            return tapY + 48 < room
+        }
         const onTouchStart = (e: TouchEvent) => {
             cancelAnimationFrame(frame)
             savedY = window.scrollY
             tapY = e.touches[0].clientY
+            tapAt = performance.now()
         }
         const onTouchMove = () => {
             cancelAnimationFrame(frame)
             savedY = null
+        }
+        const onTouchEnd = (e: TouchEvent) => {
+            // Left to iOS: drags, long presses (they select text), and moving the caret
+            // inside a field that's already focused, which doesn't scroll.
+            if (savedY === null || document.activeElement === el) return
+            if (performance.now() - tapAt > 400 || !clearsKeyboard()) return
+            e.preventDefault()
+            el.focus({ preventScroll: true })
+            const t = e.changedTouches[0]
+            const range = document.caretRangeFromPoint(t.clientX, t.clientY)
+            if (range && el.contains(range.startContainer)) {
+                const selection = window.getSelection()
+                selection?.removeAllRanges()
+                selection?.addRange(range)
+            }
         }
         const onFocus = () => {
             if (savedY === null) return
             const y = savedY
             const until = performance.now() + 700
             const hold = () => {
-                const vv = window.visualViewport
-                const keyboardOpen = !!vv && vv.height < window.innerHeight * 0.8
-                const room = vv ? (keyboardOpen ? vv.height : vv.height * 0.55) : 0
-                if (tapY + 48 < room && window.scrollY !== y) {
+                if (clearsKeyboard() && window.scrollY !== y) {
                     window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior })
                 }
                 if (performance.now() < until) frame = requestAnimationFrame(hold)
@@ -126,11 +149,13 @@ function useIOSFocusScrollGuard(ref: { current: HTMLElement | null }) {
         }
         el.addEventListener("touchstart", onTouchStart, { passive: true })
         window.addEventListener("touchmove", onTouchMove, { passive: true })
+        el.addEventListener("touchend", onTouchEnd, { passive: false })
         el.addEventListener("focus", onFocus)
         return () => {
             cancelAnimationFrame(frame)
             el.removeEventListener("touchstart", onTouchStart)
             window.removeEventListener("touchmove", onTouchMove)
+            el.removeEventListener("touchend", onTouchEnd)
             el.removeEventListener("focus", onFocus)
         }
     }, [ref])
