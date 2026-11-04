@@ -120,6 +120,56 @@ const adjustFrac = (rawFrac, axis, padPx, isY) => {
     return rawFrac
 }
 
+// iOS Safari scrolls the page to reveal the caret when an editable takes focus, and again
+// as the keyboard opens. Holds the page where it was at the tap, unless the tapped line
+// would end up under the keyboard, where iOS's own scroll is the one we want. The tap point
+// stands in for the caret. The keyboard takes about 45% of the screen before it's measurable.
+function useIOSFocusScrollGuard(ref: { current: HTMLElement | null }) {
+    useEffect(() => {
+        const el = ref.current
+        const isIOS =
+            /iP(hone|ad|od)/.test(navigator.userAgent) ||
+            (/Mac/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)
+        if (!el || !isIOS) return
+        let savedY: number | null = null
+        let tapY = 0
+        let frame = 0
+        const onTouchStart = (e: TouchEvent) => {
+            cancelAnimationFrame(frame)
+            savedY = window.scrollY
+            tapY = e.touches[0].clientY
+        }
+        const onTouchMove = () => {
+            cancelAnimationFrame(frame)
+            savedY = null
+        }
+        const onFocus = () => {
+            if (savedY === null) return
+            const y = savedY
+            const until = performance.now() + 700
+            const hold = () => {
+                const vv = window.visualViewport
+                const keyboardOpen = !!vv && vv.height < window.innerHeight * 0.8
+                const room = vv ? (keyboardOpen ? vv.height : vv.height * 0.55) : 0
+                if (tapY + 48 < room && window.scrollY !== y) {
+                    window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior })
+                }
+                if (performance.now() < until) frame = requestAnimationFrame(hold)
+            }
+            frame = requestAnimationFrame(hold)
+        }
+        el.addEventListener("touchstart", onTouchStart, { passive: true })
+        window.addEventListener("touchmove", onTouchMove, { passive: true })
+        el.addEventListener("focus", onFocus)
+        return () => {
+            cancelAnimationFrame(frame)
+            el.removeEventListener("touchstart", onTouchStart)
+            window.removeEventListener("touchmove", onTouchMove)
+            el.removeEventListener("focus", onFocus)
+        }
+    }, [ref])
+}
+
 export default function KaossTester(props) {
     const {
         text,
@@ -146,6 +196,7 @@ export default function KaossTester(props) {
     const [faceLoaded, setFaceLoaded] = useState(false)
     const controls = useAnimation()
     const taRef = useRef<HTMLTextAreaElement>(null)
+    useIOSFocusScrollGuard(taRef)
     // measure the actual rendered height so the layout is frame-relative without relying
     // on cqh/dvh (cqh reads 0 in an auto-height frame; dvh used the browser viewport)
     const rootRef = useRef<HTMLDivElement>(null)
@@ -188,9 +239,12 @@ export default function KaossTester(props) {
         const ta = taRef.current
         if (!ta) return
         const grow = () => {
+            // Resetting the height can collapse the page for a moment; don't let that move it.
+            const y = window.scrollY
             ta.style.height = "auto"
             const h = ta.scrollHeight
             ta.style.height = `${h}px`
+            if (window.scrollY !== y) window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior })
             // read-line sits `previewHeight` above the board; the top half of line 1 is
             // above it, so the text only reaches the board past previewHeight + ½ line
             setCanScroll(h > previewHeight + 0.6 * vals.size)

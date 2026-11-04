@@ -86,6 +86,56 @@ function observeElement(el: Element, cb: ResizeCallback) {
     }
 }
 
+// iOS Safari scrolls the page to reveal the caret when an editable takes focus, and again
+// as the keyboard opens. Holds the page where it was at the tap, unless the tapped line
+// would end up under the keyboard, where iOS's own scroll is the one we want. The tap point
+// stands in for the caret. The keyboard takes about 45% of the screen before it's measurable.
+function useIOSFocusScrollGuard(ref: { current: HTMLElement | null }) {
+    useEffect(() => {
+        const el = ref.current
+        const isIOS =
+            /iP(hone|ad|od)/.test(navigator.userAgent) ||
+            (/Mac/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)
+        if (!el || !isIOS) return
+        let savedY: number | null = null
+        let tapY = 0
+        let frame = 0
+        const onTouchStart = (e: TouchEvent) => {
+            cancelAnimationFrame(frame)
+            savedY = window.scrollY
+            tapY = e.touches[0].clientY
+        }
+        const onTouchMove = () => {
+            cancelAnimationFrame(frame)
+            savedY = null
+        }
+        const onFocus = () => {
+            if (savedY === null) return
+            const y = savedY
+            const until = performance.now() + 700
+            const hold = () => {
+                const vv = window.visualViewport
+                const keyboardOpen = !!vv && vv.height < window.innerHeight * 0.8
+                const room = vv ? (keyboardOpen ? vv.height : vv.height * 0.55) : 0
+                if (tapY + 48 < room && window.scrollY !== y) {
+                    window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior })
+                }
+                if (performance.now() < until) frame = requestAnimationFrame(hold)
+            }
+            frame = requestAnimationFrame(hold)
+        }
+        el.addEventListener("touchstart", onTouchStart, { passive: true })
+        window.addEventListener("touchmove", onTouchMove, { passive: true })
+        el.addEventListener("focus", onFocus)
+        return () => {
+            cancelAnimationFrame(frame)
+            el.removeEventListener("touchstart", onTouchStart)
+            window.removeEventListener("touchmove", onTouchMove)
+            el.removeEventListener("focus", onFocus)
+        }
+    }, [ref])
+}
+
 /**
  * Width FIXED so the card fills its frame's width (gives the ResizeObserver a real,
  * constrained width to fit text against — not a content-driven phantom width that
@@ -127,6 +177,7 @@ export default function CalSansSpecimenCard(props) {
 
     const containerRef = useRef<HTMLDivElement>(null)
     const textRef = useRef<HTMLDivElement>(null)
+    useIOSFocusScrollGuard(textRef)
     const cursorRef = useRef<number>(0)
     const controls = useAnimation()
     const isDirty = text !== defaultContent
