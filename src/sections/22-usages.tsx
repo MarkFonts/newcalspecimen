@@ -10,9 +10,10 @@
 // tiles, so in dark mode they get a hairline so their edges don't sink into the page.
 //
 // Fixed from the live page: the phone heading was unsized (16px); it's 20px like 810+.
+import { asset } from "@/lib/asset"
 import { Section } from "./Section"
 
-const DIR = "/font/22-usages"
+const DIR = asset("/font/22-usages")
 
 type Img = { name: string; w: number; h: number; alt: string }
 

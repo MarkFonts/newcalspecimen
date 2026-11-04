@@ -4,6 +4,7 @@
 // A heading and subtitle over a non-interactive copy of Cal.com's "Event Types"
 // dashboard set in Cal Sans: the desktop layout with a sidebar from 810px, the phone
 // layout (no sidebar, three cards) below. The dashboard follows the site theme.
+import { asset } from "@/lib/asset"
 import { CalPreviewPage } from "@/framer/CalPreviewPage"
 import styles from "./13-ui-live-view.module.css"
 import { Section } from "./Section"
@@ -40,8 +41,8 @@ export default function UiLiveView() {
                         card3
                         card4={false}
                         card5
-                        avatar1="/font/13-ui-live-view/team-avatar.jpg"
-                        avatar2="/font/13-ui-live-view/user-avatar.jpg"
+                        avatar1={asset("/font/13-ui-live-view/team-avatar.jpg")}
+                        avatar2={asset("/font/13-ui-live-view/user-avatar.jpg")}
                     />
                 </div>
             </div>

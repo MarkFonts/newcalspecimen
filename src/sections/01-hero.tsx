@@ -7,6 +7,7 @@
 //
 // The Hero starts at the very top of the page; Cal.com's sticky nav floats over it.
 // Height is the component container's: 95vh at ≥1200, 80vh at 810–1199, 70vh below.
+import { asset } from "@/lib/asset"
 import { AnimatedCal2ByBand } from "@/framer/AnimatedCal2"
 import styles from "./01-hero.module.css"
 import { Section } from "./Section"
@@ -39,7 +40,7 @@ const BASE = {
     stickerY2: 30,
     stickerHolo: "webgl",
     stickerFoil: "stars",
-    stickerFoilImage: "/font/01-hero/illusion.png",
+    stickerFoilImage: asset("/font/01-hero/illusion.png"),
     foilPreset: "softFlood",
     foilBase: "#5a5a63",
 }
@@ -65,7 +66,7 @@ export default function Hero() {
                 <defs>
                     <pattern id="hero-film" patternUnits="userSpaceOnUse" width="256" height="256">
                         <rect width="256" height="256" fill="#fff" fillOpacity={0.02} />
-                        <image href="/font/01-hero/matte-grain.png" width="256" height="256" />
+                        <image href={asset("/font/01-hero/matte-grain.png")} width="256" height="256" />
                     </pattern>
                 </defs>
             </svg>
