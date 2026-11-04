@@ -36,7 +36,7 @@ const REWRITES = [
     {
         // HOIGrid.tsx → FLEX.url, family "CalSansFlex_v2"
         find: /"https:\/\/cdn\.jsdelivr\.net\/gh\/calcom\/sans@main\/fonts\/calsans-var-flex\/CalSansFlexVF\.ttf[^"]*"/,
-        file: path.join(FONTS, "CalSansFlexVF.woff2"),
+        file: path.join(FONTS, "CalSansFlexVF-HOIGrid.woff2"),
         query: "",
     },
 ]

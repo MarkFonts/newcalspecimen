@@ -135,7 +135,16 @@
 @layer components {
     /* Framer's Main: one centered column, no gap. Rhythm comes from each section's own
        height and the space between sections (below). */
+    /* The text stack: Cal.com's Cal Sans on top, the page's own Cal Sans 2.011 under it. A reader
+       who came from another Cal.com page already has theirs. A reader who came straight here sees
+       2.011, then the text swaps when theirs arrives. Their variable bundles their Arial-based
+       "calSans Fallback" right after the font, so 2.011 can't go between them without naming the
+       family, "calSans" (their next/font name, 2026-11-03). If they rename it, the text simply
+       stays in 2.011. Before either file arrives, the browser shows Arial, as on any Cal.com page:
+       `font-display: block` on the 2.011 face doesn't hide it, because Chrome only honors that on
+       the first font in the stack. The site header is outside this class and keeps theirs. */
     .page-content {
+        font-family: "calSans", var(--font-cal-sans-demo), var(--font-cal-sans), ui-sans-serif, system-ui, sans-serif;
         display: flex;
         flex-direction: column;
         align-items: center;

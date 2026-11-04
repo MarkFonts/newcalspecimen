@@ -6,7 +6,7 @@ import localFont from "next/font/local"
 // next/font twin sets preload: false, or they have none.
 import calSansLatinUrl from "../fonts/CalSansVF-latin.woff2?preload"
 import calSansFullUrl from "../fonts/CalSansVF-full.woff2"
-import calSansFlexUrl from "../fonts/CalSansFlexVF.woff2"
+import calSansFlexUrl from "../fonts/CalSansFlexVF-HOIGrid.woff2"
 import animGraphUrl from "../assets/CalAnimGraph6[MORF,opsz]VF.woff2"
 import paperMonoUrl from "../assets/PaperMono-Regular.woff2"
 
@@ -123,7 +123,8 @@ export const LITERAL_FONT_FACES = [
     both("Cal Sans 2", calSansLatinUrl),
     // The whole font under a literal name, for components that take a family string.
     both("Cal Sans 2 Full", calSansFullUrl),
-    // HOIGrid (section 10). The Flex build has wght 400–700 too.
+    // HOIGrid (section 10). A subset made for that grid's glyphs, bands, and settings only;
+    // see fonts/README.md before changing any of them.
     both("CalSansFlex_v2", calSansFlexUrl),
     // VariableMorph and VariableMorph2 (sections 06, 07) ask for the "… Variable Regular"
     // name Framer gave it; the short name is what the brief and specs use.
