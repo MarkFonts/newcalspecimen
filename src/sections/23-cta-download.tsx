@@ -13,9 +13,10 @@
 // foreground token; the phone headings were unsized (16px) and are 20px like 810+; the
 // two target="_blank" links get rel="noopener noreferrer".
 import { Copy } from "@/framer/Copy"
+import { asset } from "@/lib/asset"
 import { Section } from "./Section"
 
-const DIR = "/font/23-cta-download"
+const DIR = asset("/font/23-cta-download")
 
 const h2 =
     "m-0 w-full text-subhead text-held font-normal whitespace-pre-wrap break-words"

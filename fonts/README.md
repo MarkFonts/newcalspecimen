@@ -15,9 +15,6 @@ a slant). Components pin `opsz`, so set `font-optical-sizing: none` where they d
 Cal.com staging ships 2.001 (opsz ≤ 32, no `ital`, no cvXX or ssXX). These do NOT replace it:
 they are the demo class (`font-demo`), beside it. See "Two text classes" in the main README.
 
-`standin/CalSansVF-coss.woff2` (147 KB, SIL OFL) is a copy of the 2.001 file their site serves,
-bundled only so the text class looks right in this standalone app. It does not move over.
-
 ## Cal Sans Flex
 
 `CalSansFlexVF-HOIGrid.woff2` (14 KB) is a subset of Cal Sans Flex 2.011 made by calbuild for

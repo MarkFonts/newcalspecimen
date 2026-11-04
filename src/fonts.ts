@@ -10,7 +10,7 @@ import calSansFlexUrl from "../fonts/CalSansFlexVF-HOIGrid.woff2"
 import animGraphUrl from "../assets/CalAnimGraph6[MORF,opsz]VF.woff2"
 import paperMonoUrl from "../assets/PaperMono-Regular.woff2"
 
-// Every font on the page, self-hosted. No CDN: nothing loads from jsDelivr or framer.com.
+// Every font the page brings, self-hosted. Nothing here loads from jsDelivr or framer.com.
 //
 // Two mechanisms, because the page has two kinds of consumer:
 //
@@ -37,19 +37,6 @@ import paperMonoUrl from "../assets/PaperMono-Regular.woff2"
 //                                     variable name, so it can't collide with theirs.
 
 // ── next/font/local ──────────────────────────────────────────────────────────────────
-
-// PREVIEW STAND-IN. This is the ONLY export that does not move to Cal.com's repo.
-// It stands in for the Cal Sans their site already serves, so the text class looks right in
-// this standalone app: Version 2.001 (opsz 8–32, GEOM, wght, YTAS, SHRP; no `ital`, no cvXX
-// or ssXX), a copy of their file. On their site `--font-cal-sans` is set on <html> by their
-// own next/font, so delete this export, its entry in `fontVariables`, and
-// fonts/standin/. Nothing else references the file. Normal style only, because the file has
-// no `ital` axis: text that needs italic belongs to the demo class.
-export const calSans = localFont({
-    src: [{ path: "../fonts/standin/CalSansVF-coss.woff2", weight: "400 700", style: "normal" }],
-    variable: "--font-cal-sans",
-    display: "swap",
-})
 
 // DEMO CLASS. Cal Sans 2.011, Latin subset, every axis and layout feature (opsz 8–45, GEOM,
 // wght, YTAS, SHRP, ital). Declared as normal AND italic from the same file so the browser
@@ -85,10 +72,9 @@ export const paperMono = localFont({
     preload: false,
 })
 
-/** Put on <html>: defines --font-cal-sans-demo, --font-cal-sans-full, and --font-paper-mono,
- *  plus the stand-in --font-cal-sans (first entry: drop it on the move). */
+/** Put on <html>: defines --font-cal-sans-demo, --font-cal-sans-full, and --font-paper-mono.
+ *  --font-cal-sans is the host's: Cal.com's site sets it, and app/layout.tsx does here. */
 export const fontVariables = [
-    calSans.variable, // PREVIEW STAND-IN: Cal.com's site sets --font-cal-sans itself. Drop this line.
     calSansDemo.variable,
     calSansFull.variable,
     paperMono.variable,

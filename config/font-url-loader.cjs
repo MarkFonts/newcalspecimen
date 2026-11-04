@@ -30,6 +30,6 @@ module.exports = function fontUrlLoader(content) {
             null
         )
     }
-    return `export default ${JSON.stringify(`${assetPrefix}/_next/${name}`)};`
+    return `export default ${JSON.stringify(`${assetPrefix || process.env.NEXT_PUBLIC_BASE_PATH || ""}/_next/${name}`)};`
 }
 module.exports.raw = true

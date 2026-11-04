@@ -23,6 +23,11 @@ In dev there is a small theme switch at the bottom right (dev only, not in produ
 **Webpack, not Turbopack.** The Framer imports are rewritten by webpack hooks (below).
 `next dev` and `next build` on Next 15 use webpack by default; don't add `--turbopack`.
 
+## GitHub Pages
+
+The page is published from this repo on every push to `main` (`.github/workflows/pages.yml`).
+Only that workflow sets `NEXT_PUBLIC_BASE_PATH`; leave it unset when the page moves to your site.
+
 ## What's where
 
 ```
@@ -41,7 +46,7 @@ config/                 the two webpack loaders (below)
 types/                  types for the Framer sources and for font-file imports
 components/             the Framer code components this page uses, as written for Framer
 assets/                 Paper Mono and Cal Anim Graph 6
-fonts/                  Cal Sans 2.011 woff2: Latin subset and full; the Flex subset for HOIGrid; standin/ = their 2.001, preview only
+fonts/                  Cal Sans 2.011 woff2: Latin subset and full; the Flex subset for HOIGrid
 ```
 
 The Framer components are imported from `components/*.tsx` as `@components/<File>`.
@@ -49,7 +54,7 @@ The Framer components are imported from `components/*.tsx` as `@components/<File
 ## Dropping `/font` into Cal.com's site
 
 1. **The route.** `app/font/page.tsx` goes where your `/font` page is. `src/sections/`,
-   `src/framer/`, and `src/lib/clientOnly.tsx` come with it; adjust the `@/` imports to
+   `src/framer/`, `src/lib/clientOnly.tsx`, and `src/lib/asset.ts` come with it; adjust the `@/` imports to
    your aliases.
 2. **The Framer component sources.** Copy the `.tsx` files the sections import (from
    `components/`, including `Shared.tsx` and `SharedTester.tsx`) into
@@ -91,7 +96,7 @@ The Framer components are imported from `components/*.tsx` as `@components/<File
 
 | Family | File | How |
 |---|---|---|
-| text class (`--font-cal-sans`, Tailwind `font-sans`) | `fonts/standin/CalSansVF-coss.woff2`, Cal Sans 2.001, 147 KB | PREVIEW STAND-IN only; does not move. Their site sets this variable itself. `next/font/local`, preloaded |
+| text class (`--font-cal-sans`, Tailwind `font-sans`) | Whatever Cal Sans the host site serves. In this standalone app, `calsans-cossui/CalSansVF.woff2` from jsDelivr | Set in `app/layout.tsx`, which doesn't move; your site sets this variable itself |
 | demo class (`--font-cal-sans-demo`, Tailwind `font-demo`) | `fonts/CalSansVF-latin.woff2`, Cal Sans 2.011, 175 KB | `next/font/local`, weight `400 700`, normal and italic from the same file, preloaded |
 | `--font-cal-sans-full` (Tailwind `font-glyphs`) | `fonts/CalSansVF-full.woff2`, 290 KB | `next/font/local`, not preloaded; the Glyphset section |
 | `--font-paper-mono` (Tailwind `font-mono`) | `assets/PaperMono-Regular.woff2` | `next/font/local`, not preloaded |
@@ -136,12 +141,13 @@ file (its URL is hashed per deploy). The demo class has its own variable name, s
 collide with theirs, and it works unchanged after the move. Carry over the `--font-demo`
 line in `globals.css` (`@theme`, next to `--font-sans`) so the `font-demo` utility exists.
 
-**One export does not move: the stand-in.** `calSans` in `src/fonts.ts` is a copy of their
-2.001 file (`fonts/standin/CalSansVF-coss.woff2`), there only so the text class looks right
-in this standalone app. Delete that export, its line in `fontVariables`, and
-`fonts/standin/`. Keep `calSansDemo`, `calSansFull`, `paperMono`, and the literal faces.
+**The text font is whatever your site serves.** No section, and nothing in `src/fonts.ts`,
+names a file for the text class. In this standalone app, `app/layout.tsx` loads the latest
+`calsans-cossui` build from jsDelivr, so the page shows the right build on its own. That
+layout doesn't move, so on your site the page uses the Cal Sans you serve, whichever version
+that is. Keep `calSansDemo`, `calSansFull`, `paperMono`, and the literal faces.
 
-Expect small differences in the text class: 2.001 is a few percent narrower or wider per
+Expect small differences in the text class: if you still serve 2.001, it's a few percent narrower or wider per
 line than 2.011 (a handful of paragraphs rewrap by one line), and headings above 32px get
 opsz 32, not up to 45.
 
@@ -210,7 +216,8 @@ renders on the server.
 
 On 2026-11-04, `next build` passed from a fresh clone (the `/font` route prerenders as
 static, 193 kB first load). On 2026-11-03, the page rendered at 375, 390, 810, 1200, and
-1920 in light and dark with no console errors, and no request left the host.
+1920 in light and dark with no console errors, and no request left the host except this app's
+text font from jsDelivr, which doesn't move to your site.
 
 - **Breakpoint names.** Your staging CSS calls the same widths `tablet` (810) and
   `desktop` (1200). The `bp810:`/`bp1200:` prefixes here are the Framer bands under

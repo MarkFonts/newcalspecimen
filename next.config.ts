@@ -16,7 +16,12 @@ import type { NextConfig } from "next"
 const ROOT = __dirname
 const COMPONENTS = path.resolve(ROOT, "components")
 
+// Set only by the GitHub Pages workflow: a static export under the repo's path.
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH
+
 const nextConfig: NextConfig = {
+    ...(BASE_PATH ? { output: "export", basePath: BASE_PATH, trailingSlash: true, images: { unoptimized: true } } : {}),
+
     // No ESLint setup in the skeleton; the type check still runs.
     eslint: { ignoreDuringBuilds: true },
 
