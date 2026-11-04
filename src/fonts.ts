@@ -14,8 +14,8 @@ import paperMonoUrl from "../assets/PaperMono-Regular.woff2"
 //
 // Two mechanisms, because the page has two kinds of consumer:
 //
-//   next/font/local  for native text (Cal.com's convention). It hashes the family name,
-//                    so it's reached only through the CSS variables below, which
+//   next/font/local  for native text (Cal.com's convention). It names the family after its
+//                    variable, so it's reached only through the CSS variables below, which
 //                    globals.css maps to Tailwind's font-sans / font-demo / font-mono.
 //   literal faces    for the Framer components, which ask for families BY NAME
 //                    ("Cal Sans 2", "CalSansFlex_v2", …). Those @font-face rules are in

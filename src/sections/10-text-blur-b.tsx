@@ -9,8 +9,8 @@ import { HOIGrid } from "@/framer/HOIGrid"
 import styles from "./10-text-blur-b.module.css"
 import { Section, SECTION_STACK } from "./Section"
 
-// The live instance's cells (page module, id VWqwK_xJm), not sandbox/presets.ts: I runs
-// 5-8 and C runs 75-80 here.
+// The live instance's cells (page module, id VWqwK_xJm): I runs 5-8 and C runs
+// 75-80 here.
 const CELLS = [
     { glyph: "I", bands: "5-8", pings: "50,14; 50,79" },
     { glyph: "t", bands: "35-40, 75-80", pings: "50,79" },
