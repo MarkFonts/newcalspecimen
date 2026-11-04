@@ -457,7 +457,7 @@ const csGpCSS = `
     font-optical-sizing: none;
     /* the cossui build italicises by file, not by the ital axis */
     font-style: var(--cs-gp-style, normal);
-    font-variation-settings: "wght" var(--cs-gp-weight, 400), "GEOM" var(--cs-gp-geom, 25), "SHRP" var(--cs-gp-shrp, 0), "YTAS" var(--cs-gp-ytas, 1440), "ital" var(--cs-gp-ital, 0), "opsz" var(--cs-gp-opsz, 36);
+    font-variation-settings: "wght" var(--cs-gp-weight, 400), "GEOM" var(--cs-gp-geom, 25), "SHRP" var(--cs-gp-shrp, 0), "YTAS" var(--cs-gp-ytas, 720), "ital" var(--cs-gp-ital, 0), "opsz" var(--cs-gp-opsz, 36);
 }
 
 /* Axis on/off toggles — a B/I/U-style toolbar. Each glyph is rendered with its own
@@ -509,8 +509,8 @@ const csGpCSS = `
     to { font-variation-settings: "SHRP" 100; }
 }
 @keyframes cs-gp-cycle-ytas {
-    from { font-variation-settings: "YTAS" 1440; }
-    to { font-variation-settings: "YTAS" 1600; }
+    from { font-variation-settings: "YTAS" calc(var(--ytas-scale, 1) * 720); }
+    to { font-variation-settings: "YTAS" calc(var(--ytas-scale, 1) * 800); }
 }
 @keyframes cs-gp-cycle-ital {
     from { font-variation-settings: "ital" 0, "GEOM" 0; }
@@ -701,7 +701,7 @@ export default function GlyphPicker() {
         )
         const root = document.documentElement.style
         root.setProperty("--cs-gp-shrp", csGpSharp ? "100" : "0")
-        root.setProperty("--cs-gp-ytas", csGpAscend ? "1600" : "1440")
+        root.setProperty("--cs-gp-ytas", csGpAscend ? "1600" : "720")
         root.setProperty("--cs-gp-ital", csGpItalic ? "1" : "0")
         root.setProperty("--cs-gp-style", csGpItalic ? "italic" : "normal")
         root.setProperty("--cs-gp-opsz", csGpOpsz.toString())

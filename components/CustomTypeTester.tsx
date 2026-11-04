@@ -9,6 +9,7 @@ import {
     buildFontFaceCSS,
     readFontRevision,
     AXIS_RANGES,
+    ytasCss,
     GEOM_PRESET_LIST,
 } from "https://framer.com/m/Shared-Endp4B.js@hk9Lk4UJ9bomCLQADDI6"
 // Shared radii (match the specimen card / glyph picker toggles). Re-Copy-Import from
@@ -442,7 +443,7 @@ export default function CustomTypeTester(props: Props) {
             textAlign: "center" as const,
             fontOpticalSizing: "none", // explicit opsz below; WebKit drops opsz = default and auto-sizes over it
             fontStyle: csTtItal >= 0.5 ? "italic" : "normal", // the cossui build italicises by file, not by the ital axis
-            fontVariationSettings: `"wght" ${csTtWeight}, "GEOM" ${csTtGeom}, "opsz" ${csTtOpsz}, "YTAS" ${csTtYtas}, "SHRP" ${csTtShrp}, "ital" ${csTtItal}`,
+            fontVariationSettings: `"wght" ${csTtWeight}, "GEOM" ${csTtGeom}, "opsz" ${csTtOpsz}, "YTAS" ${ytasCss(csTtYtas)}, "SHRP" ${csTtShrp}, "ital" ${csTtItal}`,
             resize: "none" as const,
             overflow: "auto" as const,
             display: "block",

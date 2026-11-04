@@ -141,7 +141,7 @@ function HOICell(props: any) {
     const fvs = useTransform(
         geom,
         (v) =>
-            `"opsz" ${opticalSize}, "GEOM" ${v}, "wght" ${weight}, "YTAS" 1440, "SHRP" 0, "ital" 0`
+            `"opsz" ${opticalSize}, "GEOM" ${v}, "wght" ${weight}, "YTAS" 720, "SHRP" 0, "ital" 0`
     )
 
     const pingDur = 2 / (spd <= 0 ? 1 : spd)

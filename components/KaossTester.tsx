@@ -9,6 +9,7 @@ import {
     buildFontFaceCSS,
     readFontRevision,
     AXIS_RANGES,
+    ytasCss,
 } from "https://framer.com/m/Shared-Endp4B.js@hk9Lk4UJ9bomCLQADDI6"
 import {
     AXIS_META,
@@ -58,7 +59,7 @@ const DEFAULTS = {
     spacing: 0,
     size: 96,
     shrp: 0,
-    ytas: 1440,
+    ytas: 720,
     geom: 25,
     ital: 0,
 }
@@ -213,7 +214,7 @@ export default function KaossTester(props) {
             [quad.y.key]: quad.y.min + (1 - fy) * (quad.y.max - quad.y.min),
         }))
 
-    const fvs = `"wght" ${vals.wght}, "opsz" ${vals.opsz}, "GEOM" ${vals.geom}, "YTAS" ${vals.ytas}, "SHRP" ${vals.shrp}, "ital" ${vals.ital}`
+    const fvs = `"wght" ${vals.wght}, "opsz" ${vals.opsz}, "GEOM" ${vals.geom}, "YTAS" ${ytasCss(vals.ytas)}, "SHRP" ${vals.shrp}, "ital" ${vals.ital}`
 
     return (
         <div
