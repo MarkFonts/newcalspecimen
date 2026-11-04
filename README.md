@@ -97,7 +97,7 @@ The Framer components are imported from `components/*.tsx` as `@components/<File
 | `--font-paper-mono` (Tailwind `font-mono`) | `assets/PaperMono-Regular.woff2` | `next/font/local`, not preloaded |
 | `"Cal Sans 2"` | same file as the demo class | literal `@font-face`, for the components |
 | `"Cal Sans 2 Full"` | `CalSansVF-full.woff2` | literal |
-| `"CalSansFlex_v2"` | `fonts/CalSansFlexVF.woff2` | literal (HOIGrid) |
+| `"CalSansFlex_v2"` | `fonts/CalSansFlexVF-HOIGrid.woff2`, 14 KB | literal (HOIGrid); a subset, see `fonts/README.md` |
 | `"Cal Anim Graph 6 [MORF,opsz]"`, `"… Variable Regular"` | `assets/CalAnimGraph6[MORF,opsz]VF.woff2` | literal (VariableMorph, VariableMorph2) |
 | `"Paper Mono"`, `"Paper Mono Regular"` | `assets/PaperMono-Regular.woff2` | literal |
 
@@ -124,7 +124,13 @@ demo already. Native elements opt in with `font-demo` (or `font-glyphs`, which i
 the full-font face). A text element must never ask for `ital`, cvXX, or ssXX: their build
 ignores them silently.
 
-**Nothing needs repointing on the move.** The text class is `var(--font-cal-sans)`, which
+**The text stack.** `.page-content` in `globals.css` sets `"calSans"` first and 2.011 under it,
+so a reader who comes straight to this page sees 2.011 until your file arrives, then the text
+swaps to it. Your `--font-cal-sans` bundles `"calSans Fallback"` right after the font, so this
+one rule names your family, `"calSans"`, directly. If you rename it, update that rule: until
+then the text stays in 2.011.
+
+**Nothing else needs repointing on the move.** The text class is `var(--font-cal-sans)`, which
 their own `next/font` already puts on `<html>`, and no section or component names their
 file (its URL is hashed per deploy). The demo class has its own variable name, so it can't
 collide with theirs, and it works unchanged after the move. Carry over the `--font-demo`

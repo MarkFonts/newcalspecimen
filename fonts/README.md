@@ -17,3 +17,12 @@ they are the demo class (`font-demo`), beside it. See "Two text classes" in the 
 
 `standin/CalSansVF-coss.woff2` (147 KB, SIL OFL) is a copy of the 2.001 file their site serves,
 bundled only so the text class looks right in this standalone app. It does not move over.
+
+## Cal Sans Flex
+
+`CalSansFlexVF-HOIGrid.woff2` (14 KB) is a subset of Cal Sans Flex 2.011 made by calbuild for
+HOIGrid in section 10, and it is only valid at that grid's settings: the glyphs I, t, f, y, j, M,
+C, and 9, at `opsz` 10, `wght` 400, `YTAS` 1440, `SHRP` 0, `ital` 0, across the GEOM bands I 5–10,
+C and M 75–80, and t, f, y, j, and 9 35–40 and 75–80. Anywhere else it renders wrong, even though
+its `fvar` still lists the wider `opsz` range. Changing a glyph, a band, `opticalSize`, or `weight`
+in that section needs a rebuild: `calbuild/experiments/hoigrid-subset/build_hoigrid.py`.
