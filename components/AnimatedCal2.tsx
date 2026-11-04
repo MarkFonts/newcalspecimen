@@ -122,7 +122,7 @@ const VIOLATOR_FEAT = `"titl" 1`
 //   R = distance to the glyph edge, ±fine em        → the letters
 //   G = distance, coarseMin…coarseMax em             → die-cut = letters grown by outlineW
 // Distances are in em, so one bake fits every font size and outline width.
-// Baked IN SAFARI (readme-svg/bake_sticker_sdf_safari.mjs): Safari and Chrome pick
+// Baked IN SAFARI: Safari and Chrome pick
 // different glyphs for this text (the "." and "v" advances differ), and only WebKit
 // uses the texture — Chrome keeps clipping the canvas with the SVG masks as before.
 // Rebake if the text or its axes change; until then a different text falls back to
