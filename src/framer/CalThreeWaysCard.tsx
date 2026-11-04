@@ -41,13 +41,21 @@ function useReducedMotionNow() {
 const BOX_WIDTH = [290, 290, 300, 430, 470]
 const DISPLAY_SIZE = [32, 32, 42, 64, 64]
 const CONTROL_SCALE = [75, 75, 65, 100, 100]
+// The band sizes are maxima. A band spans a range of stage widths, and the word is wider at the
+// wide end, so Card fits it to the measured stage: PAD px clear on each side of the widest word.
+// WIDEST_WORD_EM is that word's width in em (Counter form, measured at 6.28 across every band, rounded up).
+const PAD = 24
+const WIDEST_WORD_EM = 6.29
 
 export type Way = "geom" | "features" | "recal"
 
-function Card({ way }: { way: Way }) {
+function Card({ way, stageWidth }: { way: Way; stageWidth: number }) {
     const band = useBand(BANDS, 0)
     const reduce = useReducedMotionNow()
     const defaults = (Source as { defaultProps?: object }).defaultProps ?? {}
+    // stageWidth is 0 until the stage is measured; then the band values stand.
+    const fontSize = stageWidth > 0 ? Math.min(DISPLAY_SIZE[band], ((stageWidth - 2 * PAD) / WIDEST_WORD_EM) * 0.75) : DISPLAY_SIZE[band]
+    const boxWidth = stageWidth > 0 ? Math.min(BOX_WIDTH[band], stageWidth - 2 * PAD) : BOX_WIDTH[band]
     return (
         // key: isStatic must not change under mounted motion components, so remount.
         <MotionConfig isStatic={reduce} key={reduce ? "static" : "live"}>
@@ -55,8 +63,8 @@ function Card({ way }: { way: Way }) {
                 {...defaults}
                 way={way}
                 text="Geometry"
-                fontSize={DISPLAY_SIZE[band]}
-                boxWidth={BOX_WIDTH[band]}
+                fontSize={fontSize}
+                boxWidth={boxWidth}
                 controlScale={CONTROL_SCALE[band]}
                 color="var(--foreground)"
                 debug={false}
@@ -76,4 +84,4 @@ function Fallback() {
     )
 }
 
-export const CalThreeWaysCard = clientOnly<{ way: Way }>(() => Promise.resolve({ default: Card }), Fallback)
+export const CalThreeWaysCard = clientOnly<{ way: Way; stageWidth: number }>(() => Promise.resolve({ default: Card }), Fallback)

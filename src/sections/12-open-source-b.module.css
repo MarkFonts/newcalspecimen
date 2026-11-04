@@ -100,7 +100,7 @@
 .tabs {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 9fr) minmax(0, 11fr);
     grid-template-rows: auto 1fr;
     column-gap: 48px;
     row-gap: 40px;
