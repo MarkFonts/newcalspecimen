@@ -52,17 +52,30 @@
     background: var(--fp-tt-pad) !important;
 }
 
-/* Ink: the type, the values, the active toggle text, the pad dot, the unlocked slider
-   handle (framer-motion writes background-color). "color: rgb(36…" also matches inside
-   "background-color: rgb(36…"; harmless, the rule below sets that background anyway. */
+/* Ink: the type, the values, the active toggle text, and the pad dot. "color: rgb(36…" also
+   matches inside "background-color: rgb(36…"; harmless, the slider head below sets its own
+   background. */
 .testers [style*="color:#242424" i],
 .testers [style*="color: rgb(36, 36, 36)"] {
     color: var(--foreground) !important;
 }
 .testers [style*="background:#242424" i],
-.testers [style*="background: rgb(36, 36, 36)"],
-.testers [style*="background-color: rgb(36, 36, 36)"] {
+.testers [style*="background: rgb(36, 36, 36)"] {
     background: var(--foreground) !important;
+}
+
+/* The slider head. Tapping it, framer-motion springs its inline color from #8E8E8E to #242424,
+   which in dark mode crosses the card's own color and vanishes until the value lands on
+   exactly #242424. So the head ignores those inline values: gray while the inline color is at
+   rest, ink from the first frame it moves, and the fade is this transition. */
+.testers [style*="z-index:100"][style*="background-color"],
+.testers [style*="z-index: 100"][style*="background-color"] {
+    background: var(--foreground) !important;
+    transition: background-color 0.25s ease;
+}
+.testers [style*="z-index:100"][style*="background-color:#8E8E8E" i],
+.testers [style*="z-index: 100"][style*="background-color: rgb(142, 142, 142)"] {
+    background: #8e8e8e !important;
 }
 
 /* Quiet text: labels, inactive toggle text (#8E8E8E), the phone hint (#acacac). */
