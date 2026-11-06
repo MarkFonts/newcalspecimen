@@ -63,9 +63,24 @@ export default function CalGraphicsPerfected(props) {
 
     useEffect(() => {
         document.fonts.ready.then(() => setLoaded(true))
+    }, [])
+
+    // The badge only ticks while on screen: the interval stops off screen and
+    // restarts when the component comes back. Always on without IntersectionObserver.
+    const rootRef = useRef<HTMLDivElement>(null)
+    const [onScreen, setOnScreen] = useState(true)
+    useEffect(() => {
+        const el = rootRef.current
+        if (!el || typeof IntersectionObserver === "undefined") return
+        const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting))
+        io.observe(el)
+        return () => io.disconnect()
+    }, [])
+    useEffect(() => {
+        if (!onScreen) return
         const interval = setInterval(() => setTick((t) => t + 1), 2000)
         return () => clearInterval(interval)
-    }, [])
+    }, [onScreen])
 
     useEffect(() => {
         let alive = true
@@ -106,6 +121,7 @@ export default function CalGraphicsPerfected(props) {
 
     return (
         <div
+            ref={rootRef}
             style={{
                 ...containerStyle,
                 fontSize,

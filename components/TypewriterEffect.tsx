@@ -54,9 +54,20 @@ export default function TypewriterEffect(props: TypewriterEffectProps) {
     const currentWord =
         words.length > 0 ? words[wordIndex % words.length].word : ""
 
+    // Typing and blinking stop off screen and pick up where they were on return.
+    const rootRef = useRef<HTMLSpanElement>(null)
+    const [onScreen, setOnScreen] = useState(true)
+    useEffect(() => {
+        const el = rootRef.current
+        if (!el || typeof IntersectionObserver === "undefined") return
+        const io = new IntersectionObserver(([e]) => setOnScreen(e.isIntersecting))
+        io.observe(el)
+        return () => io.disconnect()
+    }, [])
+
     // Typing/Deleting Effect
     useEffect(() => {
-        if (pause) return
+        if (pause || !onScreen) return
         if (timeoutRef.current) clearTimeout(timeoutRef.current)
         let delay = typingSpeed
         if (!isDeleting && charIndex < currentWord.length) {
@@ -96,6 +107,7 @@ export default function TypewriterEffect(props: TypewriterEffectProps) {
         charIndex,
         isDeleting,
         pause,
+        onScreen,
         wordIndex,
         currentWord,
         typingSpeed,
@@ -113,6 +125,7 @@ export default function TypewriterEffect(props: TypewriterEffectProps) {
 
     // Blinking Cursor Effect
     useEffect(() => {
+        if (!onScreen) return
         if (blinkRef.current) clearInterval(blinkRef.current)
         blinkRef.current = window.setInterval(() => {
             startTransition(() => setShowCursor((v) => !v))
@@ -120,7 +133,7 @@ export default function TypewriterEffect(props: TypewriterEffectProps) {
         return () => {
             if (blinkRef.current) clearInterval(blinkRef.current)
         }
-    }, [])
+    }, [onScreen])
 
     // Font size for cursor height calculation
     const fontSize = useMemo(() => {
@@ -139,6 +152,7 @@ export default function TypewriterEffect(props: TypewriterEffectProps) {
 
     return (
         <span
+            ref={rootRef}
             style={{
                 ...style,
                 ...font,

@@ -235,6 +235,7 @@ export default function KaossTester(props) {
     // otherwise the big top/bottom spacers let you drag a single line into empty space.
     // Re-measure on font load (else scrollHeight reads pre-Cal-Sans).
     const [canScroll, setCanScroll] = useState(false)
+    const measuredOnce = useRef(false)
     useEffect(() => {
         const ta = taRef.current
         if (!ta) return
@@ -249,8 +250,22 @@ export default function KaossTester(props) {
             // above it, so the text only reaches the board past previewHeight + ½ line
             setCanScroll(h > previewHeight + 0.6 * vals.size)
         }
-        grow()
-        document.fonts.ready.then(grow)
+        // The first run waits for fonts and one shared frame, so hydration never
+        // forces layout; later runs (typing, a slider) measure at once.
+        let raf = 0
+        const later = () => {
+            cancelAnimationFrame(raf)
+            raf = requestAnimationFrame(grow)
+        }
+        if (!measuredOnce.current) {
+            measuredOnce.current = true
+            if (document.fonts?.ready) document.fonts.ready.then(later)
+            else later()
+        } else {
+            grow()
+            document.fonts?.ready.then(later)
+        }
+        return () => cancelAnimationFrame(raf)
     }, [specimen, vals.size, vals.wght, vals.spacing, ver.family, previewHeight])
 
     const dirty = JSON.stringify(vals) !== JSON.stringify(baseVals)

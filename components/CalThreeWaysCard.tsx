@@ -265,8 +265,23 @@ export default function CalThreeWaysCard(props: any) {
         document.fonts?.ready.then(measure)
     }, [way, measure])
 
+    // Pause off screen: the callback below returns early (a ref, so the hook never
+    // re-subscribes). The clock is global, so the first frame back is current.
+    const rootRef = React.useRef<HTMLDivElement>(null)
+    const onScreenRef = React.useRef(true)
+    React.useEffect(() => {
+        const el = rootRef.current
+        if (!el || typeof IntersectionObserver === "undefined") return
+        const io = new IntersectionObserver(([e]) => {
+            onScreenRef.current = e.isIntersecting
+        })
+        io.observe(el)
+        return () => io.disconnect()
+    }, [])
+
     // Global-clock phase: every instance reads the same performance.now().
     useAnimationFrame(() => {
+        if (!onScreenRef.current) return
         const now = performance.now()
         // A way-switch mid-slide would strand the headline offset.
         if (way !== "features") {
@@ -462,6 +477,7 @@ export default function CalThreeWaysCard(props: any) {
 
     return (
         <div
+            ref={rootRef}
             style={{
                 position: "relative",
                 // FILLS its container rather than hugging the widest word. Hugging
