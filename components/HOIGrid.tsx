@@ -1,5 +1,5 @@
 import { addPropertyControls, ControlType } from "framer"
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { motion, useMotionValue, useTransform, useAnimationFrame } from "framer-motion"
 import { buildFontFaceCSS } from "https://framer.com/m/Shared-Endp4B.js@hk9Lk4UJ9bomCLQADDI6"
 
@@ -116,7 +116,23 @@ function HOICell(props: any) {
     // wherever the clock got to.
     const pausedAt = useRef<number | null>(null)
 
+    // Off screen nothing is written: the callback returns at the top (a ref, so the
+    // hook never re-subscribes). The cell clock keeps running, so the first frame
+    // back is the current one.
+    const cellRef = useRef<HTMLDivElement | null>(null)
+    const onScreenRef = useRef(true)
+    useEffect(() => {
+        const el = cellRef.current
+        if (!el || typeof IntersectionObserver === "undefined") return
+        const io = new IntersectionObserver(([e]) => {
+            onScreenRef.current = e.isIntersecting
+        })
+        io.observe(el)
+        return () => io.disconnect()
+    }, [])
+
     useAnimationFrame(() => {
+        if (!onScreenRef.current) return
         // While paused, freeze the CLOCK rather than skipping the body — the frame
         // still recomputes and writes the readout, so a paused start shows its values
         // instead of a blank label. On resume, t0 shifts by the time spent stopped so
@@ -152,6 +168,7 @@ function HOICell(props: any) {
 
     return (
         <div
+            ref={cellRef}
             style={{
                 position: "relative",
                 display: "flex",

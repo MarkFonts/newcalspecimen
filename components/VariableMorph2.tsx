@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { motion, useMotionValue, useTransform, animate } from "framer-motion"
 import { addPropertyControls, ControlType } from "framer"
 import {
@@ -76,6 +76,8 @@ export default function VariableMorph2(props) {
     const progressMV = useMotionValue(0)
     const morfMV = useMotionValue(0)
 
+    // Pauses the loop off screen (and resumes it from the same frame, so no snap).
+    const rootRef = useRef<HTMLDivElement>(null)
     useEffect(() => {
         const controls = animate(0, 1, {
             duration: duration,
@@ -105,7 +107,19 @@ export default function VariableMorph2(props) {
                 }
             },
         })
-        return () => controls.stop()
+        const el = rootRef.current
+        let io: IntersectionObserver | undefined
+        if (el && typeof IntersectionObserver !== "undefined") {
+            io = new IntersectionObserver(([e]) => {
+                if (e.isIntersecting) controls.play()
+                else controls.pause()
+            })
+            io.observe(el)
+        }
+        return () => {
+            io?.disconnect()
+            controls.stop()
+        }
     }, [duration])
 
     const fontVars = useTransform(
@@ -161,6 +175,7 @@ export default function VariableMorph2(props) {
 
     return (
         <div
+            ref={rootRef}
             style={{
                 position: "relative",
                 width: "100%",

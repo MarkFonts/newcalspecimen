@@ -318,6 +318,7 @@ export default function CustomTypeTester(props: Props) {
     // Size the textarea to its content so the clamp can vertically center it (the field
     // uses margin:auto). The clamp wrapper enforces the height cap + scroll, so this
     // grows the FIELD, never the module. Re-measure on font load.
+    const measuredOnce = useRef(false)
     useEffect(() => {
         const ta = csTtTextareaRef.current
         if (!ta) return
@@ -330,8 +331,22 @@ export default function CustomTypeTester(props: Props) {
             ta.style.height = `${Math.min(ta.scrollHeight, previewHeight)}px`
             if (window.scrollY !== y) window.scrollTo({ top: y, behavior: "instant" as ScrollBehavior })
         }
-        resize()
-        document.fonts.ready.then(resize)
+        // The first run waits for fonts and one shared frame, so hydration never
+        // forces layout; later runs (typing, a slider) measure at once.
+        let raf = 0
+        const later = () => {
+            cancelAnimationFrame(raf)
+            raf = requestAnimationFrame(resize)
+        }
+        if (!measuredOnce.current) {
+            measuredOnce.current = true
+            if (document.fonts?.ready) document.fonts.ready.then(later)
+            else later()
+        } else {
+            resize()
+            document.fonts?.ready.then(later)
+        }
+        return () => cancelAnimationFrame(raf)
     }, [
         csTtText,
         csTtSize,

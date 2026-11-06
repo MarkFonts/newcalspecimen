@@ -1,5 +1,5 @@
 import { addPropertyControls, ControlType } from "framer"
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import {
     motion,
     useMotionValue,
@@ -68,7 +68,21 @@ export default function CalAxes(props: any) {
 
     // Global-clock ping-pong: every instance reads the same performance.now(), so they
     // animate in sync regardless of mount time. No React re-renders (motion value).
+    // Off screen nothing is written: the callback returns early (a ref, so the hook
+    // never re-subscribes). The clock is global, so the first frame back is current.
+    const rootRef = useRef<HTMLDivElement>(null)
+    const onScreenRef = useRef(true)
+    useEffect(() => {
+        const el = rootRef.current
+        if (!el || typeof IntersectionObserver === "undefined") return
+        const io = new IntersectionObserver(([e]) => {
+            onScreenRef.current = e.isIntersecting
+        })
+        io.observe(el)
+        return () => io.disconnect()
+    }, [])
     useAnimationFrame(() => {
+        if (!onScreenRef.current) return
         const t = performance.now() % CYCLE // 0..CYCLE
         let prog: number
         if (t < MOVE) prog = easeInOut(t / MOVE) // 0 → 1 (0.8s up)
@@ -94,6 +108,7 @@ export default function CalAxes(props: any) {
 
     return (
         <motion.div
+            ref={rootRef}
             style={{
                 ...style,
                 display: "inline-block",

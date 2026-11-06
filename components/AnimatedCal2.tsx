@@ -871,13 +871,22 @@ const ViolatorSticker = React.memo(function ViolatorSticker({
                 sx: b.width / (STICKER_SDF_META.bboxW * fontSize),
             })
         }
-        measure()
+        // No synchronous read during hydration: wait for fonts and one shared frame.
+        // Until then textBox is null and the shader falls back to the box centre.
+        let raf = 0
+        const later = () => {
+            cancelAnimationFrame(raf)
+            raf = requestAnimationFrame(measure)
+        }
+        if (document.fonts?.ready) document.fonts.ready.then(later)
+        else later()
         document.fonts
-            .load(`700 1em "${family}"`)
+            ?.load(`700 1em "${family}"`)
             .catch(() => {})
-            .then(measure)
+            .then(later)
         return () => {
             alive = false
+            cancelAnimationFrame(raf)
         }
     }, [isGL, shapeOK, canMaskGL, fontSize, family, text])
 
