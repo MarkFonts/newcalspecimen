@@ -22,7 +22,10 @@ const COMPONENTS = path.resolve(__dirname, "../components")
 
 const URL_IMPORTS = [
     [/"https:\/\/framer\.com\/m\/SharedTester-[^"]+"/g, path.join(COMPONENTS, "SharedTester.tsx")],
-    [/"https:\/\/framer\.com\/m\/Shared-[^"]+"/g, path.join(COMPONENTS, "Shared.tsx")],
+    // Shared- points at src/shims/Shared.ts, which re-exports components/Shared.tsx unchanged
+    // except buildFontFaceCSS: it registers each family once, and skips families the page
+    // already declares in <head>. See that file for the 2026-11-05 audit behind it.
+    [/"https:\/\/framer\.com\/m\/Shared-[^"]+"/g, path.resolve(__dirname, "../src/shims/Shared.ts")],
 ]
 
 const REWRITES = [
@@ -37,6 +40,14 @@ const REWRITES = [
         find: /"https:\/\/cdn\.jsdelivr\.net\/gh\/calcom\/sans@main\/fonts\/calsans-var-flex\/CalSansFlexVF\.ttf[^"]*"/,
         file: path.join(FONTS, "CalSansFlexVF-HOIGrid.woff2"),
         query: "",
+    },
+    {
+        // AnimatedCal2.tsx → CAL_SANS_WOFF2: the component embeds the latin Cal Sans as base64 so
+        // it can be pasted into Framer without a CDN. In the port that is 175 KB of font inside
+        // the JavaScript, next to the same file loading as a font; it becomes that file's URL.
+        find: /"data:font\/woff2;base64,[A-Za-z0-9+/=]+"/,
+        file: path.join(FONTS, "CalSansVF-latin.woff2"),
+        query: "?preload",
     },
 ]
 

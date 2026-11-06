@@ -171,6 +171,16 @@
             margin-top: 128px;
         }
     }
+    /* Sections the reader can't see are skipped at layout and paint (content-visibility), so
+       the demos that keep animating off screen no longer force a page-wide relayout every
+       frame. Measured on the live page, 2026-11-05: main-thread work 753 → 259 ms per second,
+       every section at 60 fps, and a 4× slower CPU from 2 to 50 fps. The 800px estimate only
+       sizes the scrollbar before a section is first laid out. Safari before 18 and Firefox
+       before 125 ignore the rule. */
+    .page-content > section {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 800px;
+    }
     @media (max-width: 809.98px) {
         .page-content > #waterfall-sample {
             margin-top: 0;
